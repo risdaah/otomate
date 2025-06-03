@@ -1,70 +1,95 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+![Logo](https://ik.imagekit.io/vu5t8xb15vzcx/tr:h-100/android-chrome-512x512_EiumvYoXeA.png?ik-sdk-version=javascript-1.4.3&updatedAt=1669548997842)
 
-## Available Scripts
+# Daisy UI Admin Dashboard Template - DashWind 
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
 
-In the project directory, you can run:
+This is a free admin dashboard template that uses **Daisy UI** and React js. It has **fully customizable and themable CSS**  CSS and is powered by Tailwind CSS utility classes. Additionally, it comes with **redux toolkit** and other libraries already set up.
 
-### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Preview
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+🚀 [Live preview](https://tailwind-dashboard-template-dashwind.vercel.app/)
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+![App Screenshot](https://ik.imagekit.io/vu5t8xb15vzcx/tr:h-600/Screenshot_2023-05-09_at_12.57.37_PM_z94SiShUDS.png?updatedAt=1683617550144)
 
-### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Features
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- **Light/dark** mode toggle
+- Token based user **authentication**
+- **Submenu support** in sidebar
+- Store management using **redux toolkit**
+- **Daisy UI** components and **Tailwind** support
+- **Right and left sidebar**, Universal loader, notifications
+- **Calendar**, global modal, **chart js 2**  and other components
 
-### `npm run eject`
+## Typescript Nest Js Version
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+[Link](https://github.com/robbins23/admin-dashboard-nextjs-typescript-daisyui)
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Installation
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Go to project directory and run (make sure you have node installed first)
 
-## Learn More
+```bash
+  npm install
+  npm start
+```
+    
+## Core Libraries Used
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- [React JS v18.2.0](https://reactjs.org/)
+- [React Router v6.4.3](https://reactrouter.com/en/main)
+- [Tailwind CSS v3.3.6](https://tailwindcss.com/)
+- [Daisy UI v4.4.19](https://daisyui.com/)
+- [HeroIcons](https://heroicons.com/)
+- [Redux toolkit v1.9](https://redux-toolkit.js.org/)
+- [React ChartJS 2 v5](https://react-chartjs-2.js.org/)
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Documentation
 
-### Code Splitting
+[Documentation](https://tailwind-dashboard-template-dashwind.vercel.app/documentation)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## Page Examples
 
-### Analyzing the Bundle Size
+|                          |                               |
+:-------------------------:|:-------------------------:
+![Dark Mode](https://ik.imagekit.io/vu5t8xb15vzcx/tr:h-600/Screenshot_2023-05-09_at_12.57.37_PM_z94SiShUDS.png?updatedAt=1683617550144) | ![Transations Screenshot](https://ik.imagekit.io/vu5t8xb15vzcx/Screenshot_2023-05-09_at_1.01.54_PM_YiG__JTFu.png?updatedAt=1683619541458) 
+![Leads Screenshot](https://ik.imagekit.io/vu5t8xb15vzcx/Screenshot_2023-05-09_at_1.34.56_PM_cdSamaaCmA.png?updatedAt=1683619597855) | ![Setting Screenshot](https://ik.imagekit.io/vu5t8xb15vzcx/Screenshot_2023-01-20_at_12.43.25_PM_xZBThuZdU.png?ik-sdk-version=javascript-1.4.3&updatedAt=1674198832089) 
+![Calendar Screenshot](https://ik.imagekit.io/vu5t8xb15vzcx/Screenshot_2023-05-09_at_1.02.03_PM_pObZm43gl.png?updatedAt=1683617549958) | ![Register Screenshot](https://ik.imagekit.io/vu5t8xb15vzcx/Screenshot_2023-01-20_at_12.43.00_PM_1fkpMRG90.png?ik-sdk-version=javascript-1.4.3&updatedAt=1674198831908)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
 
-### Making a Progressive Web App
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
 
-### Advanced Configuration
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## Preview
 
-### Deployment
+🚀 [Live preview](https://tailwind-dashboard-template-dashwind.vercel.app/)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
 
-### `npm run build` fails to minify
+## Roadmap
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- Addition of users, chat/ inbox page
+- Calendar improments
+- Seperate templates based on business functions like CRM, Sales, Project Management
+
+
+## Contributing
+
+Contributions are always welcome!
+
+## License
+
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
+
+
+## Feedback
+
+If you have any feedback, please reach out [here](https://forms.gle/8G7PsvQp8X1Swcf29)
+
+
+
