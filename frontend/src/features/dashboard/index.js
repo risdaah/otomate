@@ -4,8 +4,6 @@ import PageStats from './components/PageStats'
 
 import UserGroupIcon  from '@heroicons/react/24/outline/UserGroupIcon'
 import UsersIcon  from '@heroicons/react/24/outline/UsersIcon'
-import PresentationChartBarIcon  from '@heroicons/react/24/outline/PresentationChartBarIcon'
-import InboxArrowDownIcon  from '@heroicons/react/24/outline/InboxArrowDownIcon'
 import CircleStackIcon  from '@heroicons/react/24/outline/CircleStackIcon'
 import CreditCardIcon  from '@heroicons/react/24/outline/CreditCardIcon'
 import UserChannels from './components/UserChannels'
@@ -18,47 +16,11 @@ import DoughnutChart from './components/DoughnutChart'
 import { useState } from 'react'
 
 const statsData = [
-    {
-        title: "Total Sales",
-        value: "$22,110",
-        icon: (
-            <button className="btn btn-circle bg-primary text-white">
-                <CreditCardIcon className="w-6 h-6" />
-            </button>
-        ),
-        description: "↗︎ 2300 (22%)"
-    },
-    {
-        title: "Purchase",
-        value: "$7,545",
-        icon: (
-            <button className="btn btn-circle bg-primary text-white">
-                <InboxArrowDownIcon className="w-6 h-6" />
-            </button>
-        ),
-        description: "Current month"
-    },
-    {
-        title: "Customers",
-        value: "713",
-        icon: (
-            <button className="btn btn-circle bg-primary text-white">
-                <UserGroupIcon className="w-6 h-6" />
-            </button>
-        ),
-        description: "50 in hot leads"
-    },
-    {
-        title: "Sales Amount",
-        value: "$31,111",
-        icon: (
-            <button className="btn btn-circle bg-primary text-white">
-                <PresentationChartBarIcon className="w-6 h-6" />
-            </button>
-        ),
-        description: "↙ 300 (9%)"
-    }
-];
+    {title : "New Users", value : "34.7k", icon : <UserGroupIcon className='w-8 h-8'/>, description : "↗︎ 2300 (22%)"},
+    {title : "Total Sales", value : "$34,545", icon : <CreditCardIcon className='w-8 h-8'/>, description : "Current month"},
+    {title : "Pending Leads", value : "450", icon : <CircleStackIcon className='w-8 h-8'/>, description : "50 in hot leads"},
+    {title : "Active Users", value : "5.6k", icon : <UsersIcon className='w-8 h-8'/>, description : "↙ 300 (18%)"},
+]
 
 
 

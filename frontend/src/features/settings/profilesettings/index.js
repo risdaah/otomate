@@ -29,26 +29,15 @@ function ProfileSettings(){
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <InputText labelTitle="Name" defaultValue="Alex" updateFormValue={updateFormValue}/>
                     <InputText labelTitle="Email Id" defaultValue="alex@dashwind.com" updateFormValue={updateFormValue}/>
-                    {/* <InputText labelTitle="Role" defaultValue="Admin" updateFormValue={updateFormValue}/> */}
-                    <div className="form-control">
-                        <label className="label"><span className="label-text">Role</span> </label>
-                        <select
-                        className="select select-bordered"
-                        defaultValue="Admin"
-                        onChange={(e) => updateFormValue('role', e.target.value)}>
-                            <option value="Admin">Admin</option>
-                            <option value="User">User</option>
-                            <option value="Guest">Guest</option>
-                        </select>
-                    </div>             
-                    <InputText labelTitle="Password" defaultValue="*********" updateFormValue={updateFormValue}/>
-                    {/* <TextAreaInput labelTitle="About" defaultValue="Doing what I love, part time traveller" updateFormValue={updateFormValue}/> */}
+                    <InputText labelTitle="Title" defaultValue="UI/UX Designer" updateFormValue={updateFormValue}/>
+                    <InputText labelTitle="Place" defaultValue="California" updateFormValue={updateFormValue}/>
+                    <TextAreaInput labelTitle="About" defaultValue="Doing what I love, part time traveller" updateFormValue={updateFormValue}/>
                 </div>
                 <div className="divider" ></div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* <InputText labelTitle="Language" defaultValue="English" updateFormValue={updateFormValue}/>
-                    <InputText labelTitle="Timezone" defaultValue="IST" updateFormValue={updateFormValue}/> */}
+                    <InputText labelTitle="Language" defaultValue="English" updateFormValue={updateFormValue}/>
+                    <InputText labelTitle="Timezone" defaultValue="IST" updateFormValue={updateFormValue}/>
                     <ToogleInput updateType="syncData" labelTitle="Sync Data" defaultValue={true} updateFormValue={updateFormValue}/>
                 </div>
 

@@ -1,59 +1,66 @@
 import {
   Chart as ChartJS,
+  Filler,
   ArcElement,
   Title,
   Tooltip,
   Legend,
 } from 'chart.js';
-import { Pie } from 'react-chartjs-2';
+import { Doughnut } from 'react-chartjs-2';
 import TitleCard from '../../../components/Cards/TitleCard';
 import Subtitle from '../../../components/Typography/Subtitle';
 
-ChartJS.register(ArcElement, Tooltip, Legend);
+ChartJS.register(ArcElement, Tooltip, Legend,
+    Tooltip,
+    Filler,
+    Legend);
 
-function PieChart() {
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top',
-      },
-    },
-  };
+function DoughnutChart(){
 
-  // Top 5 customers data
-  const labels = ['Nanda Kharisma', 'Talia Aprianti', 'Risma Paramesti', 'Shafira', 'Nurul Izzah'];
-
-  const data = {
-    labels,
-    datasets: [
-      {
-        label: '# of Orders',
-        data: [150, 120, 100, 80, 60], // Replace with real data
-        backgroundColor: [
-          'rgba(62, 51, 200, 1)',
-          'rgba(233, 231, 255, 1)',
-          'rgba(70, 80, 202, 1)',
-          'rgba(123, 116, 218, 1)',
-          'rgba(180, 174, 255, 1)',
+    const options = {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'top',
+          },
+        },
+      };
+      
+      const labels = ['Electronics', 'Home Applicances', 'Beauty', 'Furniture', 'Watches', 'Apparel'];
+      
+      const data = {
+        labels,
+        datasets: [
+            {
+                label: '# of Orders',
+                data: [122, 219, 30, 51, 82, 13],
+                backgroundColor: [
+                  'rgba(255, 99, 132, 0.8)',
+                  'rgba(54, 162, 235, 0.8)',
+                  'rgba(255, 206, 86, 0.8)',
+                  'rgba(75, 192, 192, 0.8)',
+                  'rgba(153, 102, 255, 0.8)',
+                  'rgba(255, 159, 64, 0.8)',
+                ],
+                borderColor: [
+                  'rgba(255, 99, 132, 1)',
+                  'rgba(54, 162, 235, 1)',
+                  'rgba(255, 206, 86, 1)',
+                  'rgba(75, 192, 192, 1)',
+                  'rgba(153, 102, 255, 1)',
+                  'rgba(255, 159, 64, 1)',
+                ],
+                borderWidth: 1,
+              }
         ],
-        borderColor: [
-          'rgba(83, 71, 232, 1)',
-          'rgba(233, 231, 255, 1)',
-          'rgba(67, 56, 202, 1)',
-          'rgba(123, 116, 218, 1)',
-          'rgba(180, 174, 255, 1)',
-        ],
-        borderWidth: 1,
-      },
-    ],
-  };
+      };
 
-  return (
-    <TitleCard title={"Top 5 Customers by Orders"}>
-      <Pie options={options} data={data} />
-    </TitleCard>
-  );
+    return(
+        <TitleCard title={"Orders by Category"}>
+                <Doughnut options={options} data={data} />
+        </TitleCard>
+    )
 }
 
-export default PieChart;
+
+export default DoughnutChart

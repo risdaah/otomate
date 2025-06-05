@@ -22,16 +22,9 @@ function LeftSidebar(){
             <XMarkIcon className="h-5 inline-block w-5"/>
             </button>
 
-            <li className="mb-2 text-xl font-semibold">
-        <Link to={'/app/welcome'} className="flex items-center gap-2">
-          <img className="mask mask-squircle w-9" src="/logo.svg" alt="DashWind Logo" />
-          <h1 className="text-2xl mt-0 font-bold text-center">
-    <span className="text-primary">Dash</span>
-    <span className="text-accentcont">Stack</span>
-</h1>
-
-        </Link>
-      </li>
+                <li className="mb-2 font-semibold text-xl">
+                    
+                    <Link to={'/app/dashboard'}><img className="mask mask-squircle w-10" src="/logo192.png" alt="DashWind Logo"/>Otomate</Link> </li>
                 {
                     routes.map((route, k) => {
                         return(
@@ -42,7 +35,7 @@ function LeftSidebar(){
                                     (<NavLink
                                         end
                                         to={route.path}
-                                        className={({isActive}) => `${isActive ? 'font-semibold  bg-secondary ' : 'font-normal'}`} >
+                                        className={({isActive}) => `${isActive ? 'font-semibold  bg-base-200 ' : 'font-normal'}`} >
                                            {route.icon} {route.name}
                                             {
                                                 location.pathname === route.path ? (<span className="absolute inset-y-0 left-0 w-1 rounded-tr-md rounded-br-md bg-primary "

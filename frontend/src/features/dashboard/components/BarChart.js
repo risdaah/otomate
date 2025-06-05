@@ -29,14 +29,14 @@ function BarChart(){
         labels,
         datasets: [
           {
-            label: 'Warehouse 1',
+            label: 'Store 1',
             data: labels.map(() => { return Math.random() * 1000 + 500 }),
-            backgroundColor: 'rgba(62, 51, 200, 1)',
+            backgroundColor: 'rgba(255, 99, 132, 1)',
           },
           {
-            label: 'Warehouse 2',
+            label: 'Store 2',
             data: labels.map(() => { return Math.random() * 1000 + 500 }),
-            backgroundColor: 'rgba(180, 174, 255, 1)',
+            backgroundColor: 'rgba(53, 162, 235, 1)',
           },
         ],
       };

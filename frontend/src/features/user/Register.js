@@ -9,8 +9,7 @@ function Register(){
     const INITIAL_REGISTER_OBJ = {
         name : "",
         password : "",
-        emailId : "",
-        role : "",
+        emailId : ""
     }
 
     const [loading, setLoading] = useState(false)
@@ -24,7 +23,6 @@ function Register(){
         if(registerObj.name.trim() === "")return setErrorMessage("Name is required! (use any value)")
         if(registerObj.emailId.trim() === "")return setErrorMessage("Email Id is required! (use any value)")
         if(registerObj.password.trim() === "")return setErrorMessage("Password is required! (use any value)")
-        if(registerObj.role.trim() === "")return setErrorMessage("Role is required! (use any value)")
         else{
             setLoading(true)
             // Call API to check user credentials and save token in localstorage
@@ -40,34 +38,23 @@ function Register(){
     }
 
     return(
-        // <div className="min-h-screen bg-base-200 flex items-center">
-        //     <div className="card mx-auto w-full max-w-5xl  shadow-xl">
-        //         <div className="grid  md:grid-cols-2 grid-cols-1  bg-base-100 rounded-xl">
-        //         <div className=''>
-        //                 <LandingIntro />
-        //         </div>
-        <div className="min-h-screen flex items-center relative">
-            <img src="./BgGambar.svg" alt="Background" className="absolute inset-0 object-cover w-full h-full z-[-1]" />
-            <div className="card mx-auto w-full max-w-5xl shadow-xl relative z-10">
-                <div className="grid md:grid-cols-2 grid-cols-1 bg-base-100 rounded-xl">
-                    <div className="">
+        <div className="min-h-screen bg-base-200 flex items-center">
+            <div className="card mx-auto w-full max-w-5xl  shadow-xl">
+                <div className="grid  md:grid-cols-2 grid-cols-1  bg-base-100 rounded-xl">
+                <div className=''>
                         <LandingIntro />
-                    </div>
-
-
+                </div>
                 <div className='py-24 px-10'>
-                    <h2 className='text-2xl font-semibold mb-2 text-center'>Register</h2>
+                    <h2 className='text-2xl font-bold mb-2 text-center'>Register</h2>
                     <form onSubmit={(e) => submitForm(e)}>
 
                         <div className="mb-4">
 
                             <InputText defaultValue={registerObj.name} updateType="name" containerStyle="mt-4" labelTitle="Name" updateFormValue={updateFormValue}/>
 
-                            <InputText defaultValue={registerObj.emailId} updateType="emailId" containerStyle="mt-4" labelTitle="Email" updateFormValue={updateFormValue}/>
+                            <InputText defaultValue={registerObj.emailId} updateType="emailId" containerStyle="mt-4" labelTitle="Email Id" updateFormValue={updateFormValue}/>
 
                             <InputText defaultValue={registerObj.password} type="password" updateType="password" containerStyle="mt-4" labelTitle="Password" updateFormValue={updateFormValue}/>
-                            
-                            <InputText defaultValue={registerObj.role} type="role" updateType="role" containerStyle="mt-4" labelTitle="Role" updateFormValue={updateFormValue}/>
 
                         </div>
 

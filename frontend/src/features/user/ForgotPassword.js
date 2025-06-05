@@ -35,13 +35,12 @@ function ForgotPassword(){
     }
 
     return(
-        <div className="min-h-screen flex items-center relative">
-            <img src="./BgGambar.svg" alt="Background" className="absolute inset-0 object-cover w-full h-full z-[-1]" />
-            <div className="card mx-auto w-full max-w-5xl shadow-xl relative z-10">
-                <div className="grid md:grid-cols-2 grid-cols-1 bg-base-100 rounded-xl">
-                    <div className="">
+        <div className="min-h-screen bg-base-200 flex items-center">
+            <div className="card mx-auto w-full max-w-5xl  shadow-xl">
+                <div className="grid  md:grid-cols-2 grid-cols-1  bg-base-100 rounded-xl">
+                <div className=''>
                         <LandingIntro />
-                    </div>
+                </div>
                 <div className='py-24 px-10'>
                     <h2 className='text-2xl font-semibold mb-2 text-center'>Forgot Password</h2>
 
