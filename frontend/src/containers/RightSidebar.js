@@ -4,6 +4,7 @@ import NotificationBodyRightDrawer from '../features/common/components/Notificat
 import { closeRightDrawer } from '../features/common/rightDrawerSlice'
 import { RIGHT_DRAWER_TYPES } from '../utils/globalConstantUtil'
 import CalendarEventsBodyRightDrawer from '../features/calendar/CalendarEventsBodyRightDrawer'
+import ProductFilterEventsBodyRightDrawer from '../features/product/allProduct/ProductFilterBodyRightDrawer'
 
 
 function RightSidebar(){
@@ -41,6 +42,7 @@ function RightSidebar(){
                                 {
                                         [RIGHT_DRAWER_TYPES.NOTIFICATION] : <NotificationBodyRightDrawer {...extraObject} closeRightDrawer={close}/>,
                                         [RIGHT_DRAWER_TYPES.CALENDAR_EVENTS] : <CalendarEventsBodyRightDrawer {...extraObject} closeRightDrawer={close}/>,
+                                        [RIGHT_DRAWER_TYPES.PRODUCT_FILTER] : <ProductFilterEventsBodyRightDrawer {...extraObject} closeRightDrawer={close}/>,
                                         [RIGHT_DRAWER_TYPES.DEFAULT] : <div></div>
                                 }[bodyType]
                             }
