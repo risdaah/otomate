@@ -18,6 +18,13 @@ const GettingStarted = lazy(() => import('../pages/GettingStarted'))
 const DocFeatures = lazy(() => import('../pages/DocFeatures'))
 const DocComponents = lazy(() => import('../pages/DocComponents'))
 
+// Added
+const AllProduct = lazy(() => import('../pages/protected/AllProduct'));
+const Category = lazy(() => import('../pages/protected/Category'));
+const Supply = lazy(() => import('../pages/protected/Supply'));
+const CreateSupply = lazy(() => import('../pages/protected/CreateSupply'));
+const Supplier = lazy(() => import('../pages/protected/Supplier'));
+const People = lazy(() => import('../pages/protected/People'));
 
 const routes = [
   {
@@ -80,6 +87,33 @@ const routes = [
     path: '/blank',
     component: Blank,
   },
+
+  // Added
+  {
+    path: '/all-product',
+    component: AllProduct,
+  },
+  {
+    path: '/category',
+    component: Category,
+  },
+  {
+    path: '/supply',
+    component: Supply,
+  },
+  {
+    path: '/create-supply',
+    component: CreateSupply,
+  },
+  {
+    path: '/supplier',
+    component: Supplier,
+  },
+  {
+    path: '/people',
+    component: People,
+  },
+
 ]
 
 export default routes

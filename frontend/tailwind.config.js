@@ -10,7 +10,30 @@ module.exports = {
   },
   plugins: [require("@tailwindcss/typography"), require("daisyui")],
   daisyui: {
-    themes: ["light", "dark"],
+    themes: [
+      {
+        light: {
+          primary: "#4338ca",
+          prm2: "#7B74DA",
+          secondary: "#ECEAFF",
+          accent: "#37cdbe",
+          neutral: "#3d4451",
+          accentcont :"#000000",
+          "base-100": "#ffffff",
+        },
+      },  
+      {
+        dark: {
+          primary: "#4338ca",
+          prm2: "#E9E7FF",
+          secondary: "#4338ca",
+          accent: "#1fb2a6",
+          neutral: "#2a2e37",
+          accentcont :"#5A607F",
+          "base-100": "#191d24",
+        },
+      },
+    ],
   },
 
 }
