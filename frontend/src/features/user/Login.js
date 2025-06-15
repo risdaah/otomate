@@ -51,8 +51,22 @@ function Login() {
       localStorage.setItem("role", data.role);
       localStorage.setItem("user", JSON.stringify(data.user));
 
-      // Dispatch user info to redux store
-      dispatch(setUser({ ...data.user, role: data.role }));
+      // 1. Cek langsung isi response
+      console.log("LOGIN RESPONSE DATA:", data);
+
+      // 2. Cek apakah data.user.detail ada
+      console.log("🧠 data.user.detail:", data.user?.detail);
+
+      // 3. Dispatch langsung ke Redux
+      dispatch(setUser(data.user));
+
+      // 4. Tes apakah data.detail.id_supplier sampai ke Redux
+      setTimeout(() => {
+        const storedUser = JSON.parse(localStorage.getItem("user"));
+        console.log("🧾 localStorage.user:", storedUser);
+        console.log("📦 detail from localStorage:", storedUser?.detail);
+        console.log("📦 id_supplier from localStorage:", storedUser?.detail?.id_supplier);
+      }, 1000);
 
       console.log("User role for redirect:", data.role);
 

@@ -1,12 +1,18 @@
-import React from 'react';
+import {useDispatch} from 'react-redux';
+import {useEffect} from 'react';
+import Invoice from '../../features/invoice';
+import { setPageTitle } from '../../features/common/headerSlice';
 
-function Invoice() {
-  return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Invoice Page</h1>
-      <p>This is the Invoice page placeholder.</p>
-    </div>
-  );
+function InternalPage(){
+    const dispatch = useDispatch()
+
+    useEffect(()=>{
+        dispatch(setPageTitle({title: "Invoice Pesanan"}))
+    }, [])
+
+    return(
+        <Invoice />
+    )
 }
 
-export default Invoice;
+export default InternalPage

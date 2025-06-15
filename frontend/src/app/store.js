@@ -9,6 +9,8 @@ import supplierReducer from '../features/supplier/supplierSlice';
 import supplyReducer from '../features/supply/allRFQ/supplySlice';
 import userReducer from '../features/people/peopleSlice';
 import authReducer from '../features/auth/authSlice';
+import pesananReducer from '../features/pesanan/pesananSlice';
+import invoiceReducer from '../features/invoice/invoiceSlice';
 
 const combinedReducer = {
   header : headerSlice,
@@ -20,7 +22,9 @@ const combinedReducer = {
   Supplier: supplierReducer,
   Supply: supplyReducer,
   User: userReducer,
-  auth: authReducer
+  auth: authReducer,
+  pesanan: pesananReducer,
+  invoice: invoiceReducer
 }
 
 export default configureStore({

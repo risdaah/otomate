@@ -176,13 +176,59 @@ const getAllPesananWithDetails = async (req, res) => {
   }
 };
 
+// get all pesanan by id_supplier
+const getPesananWithDetailsBySupplierId = async (req, res) => {
+  try {
+    const { id_supplier } = req.params;
+    const pesananList = await Pesanan.findAll({
+      where: { id_supplier },
+      include: [
+        { model: Supplier, attributes: ['nama_supplier'] },
+        {
+          model: DetailPesanan,
+          include: [{ model: Produk, attributes: ['nama'] }]
+        }
+      ],
+      order: [['created_at', 'DESC']]
+    });
+
+    if (!pesananList || pesananList.length === 0) {
+      return res.status(404).json({ message: 'Tidak ada pesanan untuk supplier ini' });
+    }
+
+    const response = pesananList.map(p => ({
+      id_pesanan: p.id_pesanan,
+      id_user: p.id_user,
+      id_supplier: p.id_supplier,
+      total: p.total,
+      status: p.status,
+      catatan: p.catatan,
+      nama_supplier: p.Supplier?.nama_supplier || null,
+      created_at: p.created_at,
+      detail_pesanan: p.DetailPesanans.map(d => ({
+        id_detail_pesanan: d.id_detail_pesanan,
+        id_produk: d.id_produk,
+        jumlah: d.jumlah,
+        harga: d.harga,
+        created_at: d.created_at,
+        nama_produk: d.Produk?.nama || null
+      }))
+    }));
+
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(500).json({ message: 'Gagal mengambil data pesanan berdasarkan supplier' });
+  }
+};
+
 
 module.exports = {
   getAllPesanan,
   getPesananById,
   createPesanan,
   deletePesanan,
-  getAllPesananWithDetails
+  getAllPesananWithDetails,
+  getPesananWithDetailsBySupplierId
 }
   
 

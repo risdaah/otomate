@@ -46,11 +46,14 @@ router.get('/pesanan/:id', pesananController.getPesananById);
 router.post('/pesanan', pesananController.createPesanan);
 router.delete('/pesanan/:id', pesananController.deletePesanan);
 router.get('/pesanan-detail', pesananController.getAllPesananWithDetails);
+router.get('/pesanan-detail/:id_supplier', pesananController.getPesananWithDetailsBySupplierId);
 
 // invoice
 router.get('/invoice', invoiceController.getAllInvoice);
 router.get('/invoice/:id', invoiceController.getInvoiceById);
+router.get('/invoice-pesanan/:id_supplier', invoiceController.getAllInvoiceBySupplier);
 router.post('/invoice/:id/acceptPesanan', invoiceController.acceptPesanan);
+router.post('/invoice/:id/rejectPesanan', invoiceController.rejectPesanan);
 
 // mobil
 router.get('/mobil', mobilController.getAllMobil);
