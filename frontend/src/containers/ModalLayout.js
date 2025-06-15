@@ -62,7 +62,7 @@ function ModalLayout(){
 
                              // CATEGORY
                              [MODAL_BODY_TYPES.CATEGORY_ADD_NEW] : <CreateModalBodyCategory extraObject={extraObject} closeModal={close}/>,
-                             [MODAL_BODY_TYPES.CATEGORY_EDIT] : <EditModalBodyCategory extraObject={extraObject} closeModal={close}/>,
+                             [MODAL_BODY_TYPES.CATEGORY_EDIT] : <EditModalBodyCategory id_kategori={extraObject?.id_kategori} extraObject={extraObject} closeModal={close}/>,
 
                              // SUPPLY 
                              [MODAL_BODY_TYPES.SUPPLY_EDIT] : <EditModalBodySupply extraObject={extraObject} closeModal={close}/>,

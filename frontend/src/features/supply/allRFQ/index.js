@@ -1,6 +1,6 @@
 import moment from "moment"
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react"
 import { utils, write } from "xlsx";
 import { saveAs } from "file-saver";
@@ -29,9 +29,18 @@ export const RFQDATA = [
     {id_pesanan : "#4567", id_user : "23,989", id_supplier : "Product usages", nama : "AIR RADIATOR",total: "100.000",status : "Paid"},
 ];
 
+  // RUPIAH FORMAT
+  const formatRupiah = (value) => {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0,
+  }).format(value);
+  };
+
 function Supply() {
-  const [supply] = useState(RFQDATA);
   const dispatch = useDispatch();
+  const { supplys = [], isLoading } = useSelector((state) => state.Supply || {});
   const [isCreateSupply, setIsCreateSupply] = useState(false);
 
   useEffect(() => {
@@ -49,8 +58,8 @@ function Supply() {
   };
 
   // Filter data berdasarkan teks pencarian
-  const filteredSupplys = RFQDATA.filter((supply) =>
-    supply.nama.toLowerCase().includes(searchText.toLowerCase())
+  const filteredSupplys = supplys.filter((supply) =>
+    supply.total?.toLowerCase().includes(searchText.toLowerCase())
   );
 
   // Hitung jumlah halaman
@@ -68,6 +77,7 @@ function Supply() {
     else return <div className="badge badge-ghost">{status}</div>
   }
 
+
   // DROPDOWN
   const [openDropdown, setOpenDropdown] = useState(null);
 
@@ -78,7 +88,7 @@ function Supply() {
 
   // EXCEL
   const downloadExcel = () => {
-    const worksheet = utils.json_to_sheet(RFQDATA); // Ubah data JSON ke format Excel
+    const worksheet = utils.json_to_sheet(supplys); // Ubah data JSON ke format Excel
     const workbook = utils.book_new(); // Buat workbook baru
     utils.book_append_sheet(workbook, worksheet, "Supply"); // Tambahkan worksheet ke workbook
   
@@ -98,14 +108,13 @@ function Supply() {
     doc.text("RFQ Data", 14, 10);
   
     // Data tabel
-    const tableColumn = ["id_Pesanan", "Id_User", "Id_Supplier", "Nama", "Total", "Status"];
-    const tableRows = RFQDATA.map(item => [
+    const tableColumn = ["id_Pesanan", "Supplier", "Total", "Status", "AT"];
+    const tableRows = supplys.map(item => [
       item.id_pesanan,
-      item.id_user,
-      item.id_supplier,
-      item.nama,
+      item.nama_supplier,
       item.total,
-      item.status
+      item.status,
+      moment(item.created_at).format("YYYY-MM-DD")
     ]);
   
     // Menambahkan tabel ke PDF
@@ -116,15 +125,16 @@ function Supply() {
     });
   
     // Simpan file sebagai 'SupplyData.pdf'
-    doc.save("SupplyData.pdf");
+    doc.save("RFQ.pdf");
   };
 
    // VIEW
-   const openViewSupply = (product) => {
+  const openViewSupply = (supply) => {
     dispatch(openModal({
-      title: "Order Details",
+      title: "Detail Pesanan",
       bodyType: MODAL_BODY_TYPES.SUPPLY_VIEW,
-      extraObject: product
+      size: 'lg',
+      extraObject: supply, // Kirim seluruh objek pesanan
     }));
   };
 
@@ -201,23 +211,21 @@ function Supply() {
             <thead>
                 <tr>
                     <th className="text-center text-primary text-base">ID_Pesanan</th>
-                    <th className="text-center text-primary text-base">ID_User</th>
-                    <th className="text-center text-primary text-base">ID_Supplier</th>
-                    <th className="text-center text-primary text-base">Nama Produk</th>
+                    <th className="text-center text-primary text-base">Supplier</th>
                     <th className="text-center text-primary text-base">Total</th>
                     <th className="text-center text-primary text-base">Status</th>
+                    <th className="text-center text-primary text-base">AT</th>
                     <th className="text-center text-primary text-base">Action</th>
                 </tr>
             </thead>
             <tbody>
                 {currentItems.map((supply, index) => (
                   <tr key={index}>
-                    <td className="text-center">{supply.id_pesanan}</td>
-                    <td className="text-center">{supply.id_user}</td> 
-                    <td className="text-center">{supply.id_supplier}</td> 
-                    <td className="text-center">{supply.nama}</td> 
-                    <td className="text-center">{supply.total}</td> 
-                    <td className="text-center">{getPaymentStatus(supply.status)}</td>                    
+                    <td className="text-center">{supply.id_pesanan}</td> 
+                    <td className="text-center">{supply.nama_supplier}</td> 
+                    <td className="text-center">{formatRupiah(supply.total)}</td>
+                    <td className="text-center">{getPaymentStatus(supply.status)}</td>  
+                    <td className="text-center">{moment(supply.created_at).format("DD-MM-YYYY")}</td>                  
                     <td>
                       <div className="dropdown dropdown-end ml-12">
                         <button onClick={() => handleActionClick(index)}>
@@ -230,26 +238,27 @@ function Supply() {
                           {/* View */}
                           <div className="flex items-center ml-2">
                               <Eye className="h-5 w-5 inline-block" />
-                              <li onClick={() => openViewSupply(supply.id_pesanan)}>    
+                              <li onClick={() => openViewSupply(supply)}>  
                                   <span>View</span>
                               </li>
+                              
                           </div>
                           
                           {/* Edit */}
-                          <div className="flex items-center ml-2">
+                          {/* <div className="flex items-center ml-2">
                             <PencilSquare className="h-5 w-5 inline-block" />
                             <li onClick={() => openEditSupply(supply.id_pesanan)}> 
                                 <span>Edit</span>
                             </li>
-                          </div>
+                          </div> */}
 
                           {/* Delete */}
-                          <div className="flex items-center ml-2">
+                          {/* <div className="flex items-center ml-2">
                               <Trash className="h-5 w-5 inline-block" />
                               <li onClick={() => deleteSupply(index)}>  
                                   <span>Delete</span>
                               </li>
-                          </div>                         
+                          </div>                          */}
                         </ul>
                       </div>
                     </td>

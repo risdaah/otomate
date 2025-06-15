@@ -1,260 +1,224 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { QrCodeIcon } from "@heroicons/react/24/outline";
 import TitleCard from "../../../components/Cards/TitleCard";
-import { NavLink,  Routes, Link , useLocation, useNavigate} from 'react-router-dom'
+
+// Format Rupiah
+const formatRupiah = (number) =>
+  new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0,
+  }).format(number);
 
 const CreatePurchase = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [suppliers, setSuppliers] = useState([]);
   const [supplier, setSupplier] = useState("");
-  const [warehouse, setWarehouse] = useState("");
-  const [orderTax, setOrderTax] = useState(0);
-  const [discount, setDiscount] = useState(0);
-  const [shipping, setShipping] = useState(0);
-  const [status, setStatus] = useState("");
   const [note, setNote] = useState("");
-  const [scanning, setScanning] = useState(false);
-  const [productCode, setProductCode] = useState("");
   const [orderItems, setOrderItems] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const calculateTotal = () => {
-    const totalSubtotal = orderItems.reduce(
-      (total, item) => total + item.subtotal,
-      0
-    );
-    return totalSubtotal + orderTax - discount + shipping;
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    axios.get("http://localhost:5000/api/supplier")
+      .then((res) => setSuppliers(res.data))
+      .catch((err) => console.error("Failed to fetch suppliers", err));
+
+    axios.get("http://localhost:5000/api/produk")
+      .then((res) => setProducts(res.data))
+      .catch((err) => console.error("Failed to fetch products", err));
+  }, []);
+
+  const handleAddProduct = (product) => {
+    const alreadyExists = orderItems.find((item) => item.id_produk === product.id_produk);
+    if (alreadyExists) {
+      alert("Produk sudah ditambahkan");
+      return;
+    }
+
+  const newItem = {
+    id_produk: product.id_produk,
+    nama: product.nama,
+    jumlah: 1,
+    harga: parseFloat(product.harga), // ⬅️ konversi ke number
+    subtotal: parseFloat(product.harga),
   };
 
-   // VIEW
-   const navigate = useNavigate();
+    setOrderItems([...orderItems, newItem]);
+    setSearchTerm("");
+  };
 
-   const handleClick = () => {
-       navigate("/app/supply");
-   };
+  const handleQtyChange = (index, newQty) => {
+    const updatedItems = [...orderItems];
+    updatedItems[index].jumlah = newQty;
+    updatedItems[index].subtotal = updatedItems[index].harga * newQty;
+    setOrderItems(updatedItems);
+  };
+
+  const handleRemoveItem = (index) => {
+    const updated = [...orderItems];
+    updated.splice(index, 1);
+    setOrderItems(updated);
+  };
+
+  const total = orderItems.reduce((acc, item) => acc + item.subtotal, 0);
 
   const handleSubmit = () => {
-    const data = {
-      date: selectedDate,
-      supplier,
-      warehouse,
-      orderItems,
-      orderTax,
-      discount,
-      shipping,
-      total: calculateTotal(),
-      status,
-      note,
+    const user = JSON.parse(localStorage.getItem("user"));
+    const id_user = user?.id_user;
+
+    if (!id_user || !supplier || orderItems.length === 0) {
+      alert("Lengkapi data terlebih dahulu");
+      return;
+    }
+
+    const payload = {
+      id_user,
+      id_supplier: parseInt(supplier),
+      catatan: note,
+      products: orderItems.map((item) => ({
+        id_produk: item.id_produk,
+        jumlah: item.jumlah,
+        harga: parseFloat(item.harga.toFixed(2)),
+      })),
     };
-    console.log("Order Data:", data);
-    alert("Order submitted successfully!");
+
+    console.log("🚀 Payload yang dikirim:", payload);
+
+    axios.post("http://localhost:5000/api/pesanan", payload)
+      .then(() => {
+        alert("Pesanan berhasil dibuat");
+        navigate("/app/supply");
+      })
+      .catch((err) => {
+        console.error("❌ Gagal membuat pesanan:", err);
+        if (err.response?.data?.message) {
+          alert(`Error: ${err.response.data.message}`);
+        } else {
+          alert("Gagal membuat pesanan");
+        }
+      });
   };
 
-  // Total Calculation for display
-  const totalSubtotal = orderItems.reduce(
-    (total, item) => total + item.subtotal,
-    0
-  );
-  const total = calculateTotal();
-
   return (
-    <TitleCard title="Create Order" topMargin="mt-2">
-      
-      {/* Date, Supplier, Warehouse */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-        {/* Date */}
-        <div className="flex flex-col">
-          <label className="block text-sm font-medium mb-1">
-            Date*
-          </label>
+    <TitleCard title="Buat Pesanan" topMargin="mt-2">
+      {/* Tanggal & Supplier */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div>
+          <label className="block text-sm mb-1 font-medium">Tanggal</label>
           <DatePicker
             selected={selectedDate}
             onChange={(date) => setSelectedDate(date)}
-            className="w-full border bg-base-100 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            className="w-full border bg-base-100 rounded px-3 py-2"
           />
         </div>
-
-        {/* Supplier */}
-        <div className="flex flex-col">
-          <label className="block text-sm font-mediummb-1">
-            Supplier*
-          </label>
+        <div>
+          <label className="block text-sm mb-1 font-medium">Supplier</label>
           <select
             value={supplier}
             onChange={(e) => setSupplier(e.target.value)}
-            className="w-full border bg-base-100 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            className="w-full border bg-base-100 rounded px-3 py-2"
           >
-            <option value="">Choose Supplier</option>
-            <option value="Supplier A">Supplier A</option>
-            <option value="Supplier B">Supplier B</option>
-          </select>
-        </div>
-
-        {/* Warehouse */}
-        <div className="flex flex-col">
-          <label className="block text-sm font-medium mb-1">
-            Warehouse*
-          </label>
-          <select
-            value={warehouse}
-            onChange={(e) => setWarehouse(e.target.value)}
-            className="w-full border bg-base-100 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-          >
-            <option value="">Choose Warehouse</option>
-            <option value="Warehouse A">Warehouse A</option>
-            <option value="Warehouse B">Warehouse B</option>
+            <option value="">Pilih Supplier</option>
+            {suppliers.map((s) => (
+              <option key={s.id_supplier} value={s.id_supplier}>
+                {s.nama_supplier}
+              </option>
+            ))}
           </select>
         </div>
       </div>
 
-      {/* Order Items Table */}
+      {/* Search Produk */}
+      <div className="mb-4 relative">
+        <label className="block text-sm font-medium mb-1">Cari Produk</label>
+        <input
+          type="text"
+          placeholder="Ketik nama produk..."
+          className="w-full border bg-base-100 rounded px-3 py-2"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        {searchTerm && (
+          <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded mt-1 max-h-40 overflow-y-auto">
+            {products
+              .filter((p) =>
+                p.nama.toLowerCase().includes(searchTerm.toLowerCase())
+              )
+              .map((p) => (
+                <li
+                  key={p.id_produk}
+                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                  onClick={() => handleAddProduct(p)}
+                >
+                  {p.nama} - {formatRupiah(p.harga)}
+                </li>
+              ))}
+          </ul>
+        )}
+      </div>
+
+      {/* Tabel Produk */}
       <table className="w-full border-collapse border border-gray-300 mb-6">
-        <thead>
-          <tr className="bg-gray-200">
-            <th className="border border-[#D9D9D9] px-4 py-2 text-neutral text-left">#</th>
-            <th className="border border-[#D9D9D9] px-4 py-2 text-neutral text-left">
-              Product
-            </th>
-            <th className="border border-[#D9D9D9] px-4 py-2 text-neutral text-left">
-              Net Unit Price
-            </th>
-            <th className="border border-[#D9D9D9] px-4 py-2 text-neutral text-left">
-              Current Stock
-            </th>
-            <th className="border border-[#D9D9D9] px-4 py-2 text-neutral text-left">
-              Qty Return
-            </th>
-            <th className="border border-[#D9D9D9] px-4 py-2 text-neutral text-left">
-              Discount
-            </th>
-            <th className="border border-[#D9D9D9] px-4 py-2 text-neutral text-left">Tax</th>
-            <th className="border border-[#D9D9D9] px-4 py-2 text-neutral text-left">
-              Subtotal
-            </th>
+        <thead className="bg-gray-200">
+          <tr>
+            <th className="border px-4 py-2">#</th>
+            <th className="border px-4 py-2 text-left">Produk</th>
+            <th className="border px-4 py-2 text-left">Harga</th>
+            <th className="border px-4 py-2 text-left">Jumlah</th>
+            <th className="border px-4 py-2 text-left">Subtotal</th>
+            <th className="border px-4 py-2"></th>
           </tr>
         </thead>
         <tbody>
-          {orderItems.length > 0 ? (
-            orderItems.map((item, index) => (
-              <tr key={item.id}>
-                <td className="border border-gray-300 px-4 py-2">
-                  {index + 1}
-                </td>
-                <td className="border border-gray-300 px-4 py-2">
-                  {item.product}
-                </td>
-                <td className="border border-gray-300 px-4 py-2">
-                  ${item.unitPrice.toFixed(2)}
-                </td>
-                <td className="border border-gray-300 px-4 py-2">
-                  {item.currentStock}
-                </td>
-                <td className="border border-gray-300 px-4 py-2">{item.qty}</td>
-                <td className="border border-gray-300 px-4 py-2">
-                  ${item.discount.toFixed(2)}
-                </td>
-                <td className="border border-gray-300 px-4 py-2">
-                  ${item.tax.toFixed(2)}
-                </td>
-                <td className="border border-gray-300 px-4 py-2">
-                  ${item.subtotal.toFixed(2)}
-                </td>
-              </tr>
-            ))
-          ) : (
+          {orderItems.map((item, index) => (
+            <tr key={item.id_produk}>
+              <td className="border px-4 py-2">{index + 1}</td>
+              <td className="border px-4 py-2">{item.nama}</td>
+              <td className="border px-4 py-2">{formatRupiah(item.harga)}</td>
+              <td className="border px-4 py-2">
+                <input
+                  type="number"
+                  min="1"
+                  value={item.jumlah}
+                  onChange={(e) => handleQtyChange(index, parseInt(e.target.value))}
+                  className="w-20 border rounded px-2 py-1"
+                />
+              </td>
+              <td className="border px-4 py-2">{formatRupiah(item.subtotal)}</td>
+              <td className="border px-4 py-2">
+                <button
+                  className="text-red-500"
+                  onClick={() => handleRemoveItem(index)}
+                >
+                  Hapus
+                </button>
+              </td>
+            </tr>
+          ))}
+          {orderItems.length === 0 && (
             <tr>
-              <td colSpan="8" className="text-center py-4">
-                No items available
+              <td colSpan="6" className="text-center py-4">
+                Tidak ada produk ditambahkan
               </td>
             </tr>
           )}
         </tbody>
       </table>
 
-      {/* Total Summary */}
-      <div className="flex justify-end mb-6">
-        <div className="text-sm text-right w-72">
-          <div className="bg-[#D9D9D9] border-t border-b border-black p-2 flex justify-between">
-            <span className="text-sm text-neutral font-medium">Subtotal:</span>
-            <span className="text-sm text-neutral font-medium">
-              ${totalSubtotal.toFixed(2)}
-            </span>
-          </div>
-          <div className="bg-base-100 border-t border-b border-black p-2 flex justify-between">
-            <span className="text-sm  font-medium">Order Tax:</span>
-            <span className="text-sm font-medium">${orderTax.toFixed(2)}</span>
-          </div>
-          <div className="bg-[#D9D9D9] border-t border-b border-black p-2 flex justify-between">
-            <span className="text-sm text-neutral font-medium">Discount:</span>
-            <span className="text-sm text-neutral font-medium">${discount.toFixed(2)}</span>
-          </div>
-          <div className="bg-base-100 border-t border-b border-black p-2 flex justify-between">
-            <span className="text-sm font-medium">Shipping:</span>
-            <span className="text-sm font-medium">${shipping.toFixed(2)}</span>
-          </div>
-          <div className="bg-[#D9D9D9] border-t border-b border-black p-2 flex justify-between">
-            <span className="text-sm text-neutral font-bold">Grand Total:</span>
-            <span className="text-sm text-neutral font-bold">${total.toFixed(2)}</span>
-          </div>
-        </div>
+      {/* Total */}
+      <div className="text-right text-lg font-semibold mb-6">
+        Total: {formatRupiah(total)}
       </div>
 
-      {/* Order Tax, Discount, Shipping */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-        <div>
-          <label className="block text-sm font-medium mb-1">
-            Order Tax
-          </label>
-          <input
-            type="number"
-            value={orderTax}
-            onChange={(e) => setOrderTax(parseFloat(e.target.value) || 0)}
-            className="w-full border bg-base-100 rounded px-3 py-2"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium  mb-1">
-            Discount
-          </label>
-          <input
-            type="number"
-            value={discount}
-            onChange={(e) => setDiscount(parseFloat(e.target.value) || 0)}
-            className="w-full border bg-base-100 rounded px-3 py-2"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">
-            Shipping
-          </label>
-          <input
-            type="number"
-            value={shipping}
-            onChange={(e) => setShipping(parseFloat(e.target.value) || 0)}
-            className="w-full border bg-base-100 rounded px-3 py-2"
-          />
-        </div>
-      </div>
-
-      {/* Status, Note */}
+      {/* Catatan */}
       <div className="mb-4">
-        <label className="block text-sm font-medium mb-1">
-          Status*
-        </label>
-        <select
-          value={status}
-          onChange={(e) => setStatus(e.target.value)}
-          className="w-full border bg-base-100 rounded px-3 py-2"
-        >
-          <option value="">Choose Status</option>
-          <option value="Pending">Pending</option>
-          <option value="Completed">Completed</option>
-        </select>
-      </div>
-      <div className="mb-4">
-        <label className="block text-sm font-medium mb-1">
-          Note
-        </label>
+        <label className="block text-sm font-medium mb-1">Catatan</label>
         <textarea
           value={note}
           onChange={(e) => setNote(e.target.value)}
@@ -263,10 +227,10 @@ const CreatePurchase = () => {
         ></textarea>
       </div>
 
-      {/* Submit Button */}
+      {/* Tombol Submit */}
       <div className="mt-8">
         <button className="btn btn-primary float-right" onClick={handleSubmit}>
-          Submit
+          Simpan Pesanan
         </button>
       </div>
     </TitleCard>

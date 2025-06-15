@@ -3,10 +3,11 @@ import { useDispatch } from "react-redux"
 import InputText from '../../../../components/Input/InputText'
 import ErrorText from '../../../../components/Typography/ErrorText'
 import { showNotification } from "../../../common/headerSlice"
-import { addNewCategory } from '../categorySlice';
+import { createCategory } from '../categorySlice';
+import { getCategories } from '../categorySlice';
 
 const INITIAL_CATEGORY_OBJ = {  
-    nama: "", 
+    nama_kategori: "",
 } 
 
 function CreateModalBodyCategory({closeModal}){
@@ -27,24 +28,34 @@ function CreateModalBodyCategory({closeModal}){
     };   
 
 
-    const saveNewCategory = () => {
-        if(CategoryObj.nama.trim() === "") return setErrorMessage("Nama is required!")
-        else {
-            let newCategoryObj = {
-                "id_kategori": 3, 
-                "nama": CategoryObj.nama, 
-            }
-            if (newCategoryObj.gambar.startsWith("blob:")) {
-                newCategoryObj.gambar = null;
-            }
-            console.log('Dispatching addNewCategory', newCategoryObj);
-            dispatch(addNewCategory({ newCategoryObj }));
-
-            dispatch(showNotification({ message: "New Category Added!", status: 1 }))
-            closeModal()
-        }
+    const saveNewCategory = async () => {
+    if (CategoryObj.nama_kategori.trim() === "") {
+        return setErrorMessage("Nama is required!");
     }
-    
+
+    try {
+        setLoading(true);
+
+        const newCategoryObj = {
+        nama_kategori: CategoryObj.nama_kategori, // Sesuaikan dengan backend
+        };
+
+        await dispatch(createCategory(newCategoryObj)).unwrap(); // Kirim ke backend
+
+        // ✅ Ambil ulang semua kategori dari server agar data fresh
+        await dispatch(getCategories());
+
+
+        dispatch(showNotification({ message: "Kategori berhasil ditambahkan!", status: 1 }));
+        closeModal();
+    } catch (error) {
+        setErrorMessage(error.message || "Terjadi kesalahan saat menambahkan kategori");
+    } finally {
+        setLoading(false);
+    }
+    };
+
+
 
     const updateFormValue = ({ updateType, value }) => {
         setErrorMessage("");
@@ -55,8 +66,8 @@ function CreateModalBodyCategory({closeModal}){
         <>
             <InputText 
                 type="text" 
-                defaultValue={CategoryObj.nama} 
-                updateType="nama" 
+                defaultValue={CategoryObj.nama_kategori} 
+                updateType="nama_kategori" 
                 labelTitle="Nama Kategori" 
                 updateFormValue={updateFormValue} 
             />

@@ -1,10 +1,21 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
 
-export const getSuppliersContent = createAsyncThunk('/suppliers/content', async () => {
-	const response = await axios.get('https://reqres.in/api/users?page=1', {})
-	return response.data;
-})
+const api = axios.create({
+  baseURL: 'http://localhost:5000/api', // Ubah jika beda
+  withCredentials: true, // jika pakai cookie auth
+});
+
+// Async Thunks
+export const getSuppliersContent = createAsyncThunk(
+  'Supplier/getSupplierContent',
+  async () => {
+    console.log('Thunk getSupplierContent started');
+    const response = await api.get('/supplier');
+    console.log('API response:', response);
+    return response.data;
+  }
+);
 
 export const suppliersSlice = createSlice({
     name: 'Supplier',
@@ -30,18 +41,21 @@ export const suppliersSlice = createSlice({
         }
     },
 
-    extraReducers: {
-        [getSuppliersContent.pending]: (state) => {
-            state.isLoading = true;
-        },
-        [getSuppliersContent.fulfilled]: (state, action) => {
-            state.suppliers = action.payload.data;
-            state.isLoading = false;
-        },
-        [getSuppliersContent.rejected]: (state) => {
-            state.isLoading = false;
-        }
+    extraReducers: (builder) => {
+    builder
+        .addCase(getSuppliersContent.pending, (state) => {
+        state.isLoading = true;
+        })
+        .addCase(getSuppliersContent.fulfilled, (state, action) => {
+        console.log("Fulfilled Payload:", action.payload); // Debug
+        state.suppliers = action.payload; // Assign the array directly
+        state.isLoading = false;
+        })
+        .addCase(getSuppliersContent.rejected, (state) => {
+        state.isLoading = false;
+        });
     }
+
 });
 
 export const { addNewSupplier, deleteSupplier, editSupplier } = suppliersSlice.actions;

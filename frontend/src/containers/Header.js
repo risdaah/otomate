@@ -7,8 +7,10 @@ import MoonIcon from '@heroicons/react/24/outline/MoonIcon'
 import SunIcon from '@heroicons/react/24/outline/SunIcon'
 import { openRightDrawer } from '../features/common/rightDrawerSlice';
 import { RIGHT_DRAWER_TYPES } from '../utils/globalConstantUtil'
-
+import { logoutUserApi } from '../api/auth';
 import { NavLink,  Routes, Link , useLocation} from 'react-router-dom'
+
+
 
 
 function Header(){
@@ -36,9 +38,15 @@ function Header(){
     }
 
 
-    function logoutUser(){
-        localStorage.clear();
-        window.location.href = '/'
+    async function logoutUser() {
+        try {
+        await logoutUserApi();
+        } catch (error) {
+        console.error("Logout failed", error); // Bisa juga tampilkan toast
+        }
+
+        localStorage.clear(); // tetap clear localStorage
+        window.location.href = '/login'; // redirect ke login
     }
 
     return(
