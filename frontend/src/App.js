@@ -11,7 +11,8 @@ const Login = lazy(() => import('./pages/Login'))
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword'))
 const Register = lazy(() => import('./pages/Register'))
 const Documentation = lazy(() => import('./pages/Documentation'))
-const SupplierDashboard = lazy(() => import('./pages/protected/DashboardSupplier'))
+const DashboardSupplier = lazy(() => import('./pages/protected/DashboardSupplier'))
+
 
 
 // Initializing different libraries
@@ -41,7 +42,7 @@ function App() {
           
           {/* Place new routes over this */}
           <Route path="/app/*" element={<Layout />} />
-          <Route path="/dashboard-supplier" element={<SupplierDashboard />} />
+          <Route path="/dashboard-supplier" element={<DashboardSupplier />} />
 
           <Route path="*" element={<Navigate to={token ? "/login" : "/app/dashboard"} replace />}/>
 

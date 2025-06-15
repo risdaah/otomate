@@ -34,8 +34,6 @@ function ModalLayout(){
         dispatch(closeModal(e))
     }
 
-
-
     return(
         <>
         {/* The button to open modal */}

@@ -29,9 +29,14 @@ DetailPesanan.belongsTo(Pesanan, {
 // untuk data rfq
 Pesanan.belongsTo(Supplier, {foreignKey: 'id_supplier'});
 
+// Add association between Invoice and Pesanan
+Invoice.belongsTo(Pesanan, { foreignKey: 'id_pesanan' });
+Pesanan.hasOne(Invoice, { foreignKey: 'id_pesanan' });
+
 // untuk data supplier
 Supplier.belongsTo(User, {foreignKey: 'id_user'});
 User.hasOne(Supplier, { foreignKey: 'id_user' });
+
 
 
 // Kumpulkan semua model dalam satu objek `db`

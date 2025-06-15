@@ -1,12 +1,19 @@
-import React from 'react';
+import {useEffect} from 'react';
+import {useDispatch} from 'react-redux';
+import Pesanan from '../../features/pesanan';
+import { setPageTitle } from '../../features/common/headerSlice';
 
-function Pesanan() {
-  return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Pesanan Page</h1>
-      <p>This is the Pesanan page placeholder.</p>
-    </div>
-  );
+function InternalPage(){
+  const dispatch = useDispatch()
+
+    useEffect(() => {
+        dispatch(setPageTitle({ title : "Semua Pesanan"}))
+      }, [])
+
+
+    return(
+        < Pesanan />
+    )
 }
 
-export default Pesanan;
+export default InternalPage
