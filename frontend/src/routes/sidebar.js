@@ -30,21 +30,24 @@ const routes = [
     path: '/app/dashboard',
     icon: <Squares2X2Icon className={iconClasses}/>, 
     name: 'Dashboard',
+    roles: ['bengkel'],
   },
 
-  // Added
   {
     path: "", //no url needed as this has submenu
     icon: <FolderIcon className={`${iconClasses} inline`} />, // icon component
     name: "Product", // name that appear in Sidebar
+    roles: ['bengkel'],
     submenu: [
       {
         path: "/app/all-product",
         name: "Semua Produk",
+        roles: ['bengkel'],
       },     
       {
         path: "/app/category", //url
         name: "Kategori", // name that appear in Sidebar
+        roles: ['bengkel'],
       },
     ],
   },
@@ -53,135 +56,47 @@ const routes = [
     path: "", //no url needed as this has submenu
     icon: <InboxStackIcon className={`${iconClasses} inline`} />, // icon component
     name: "Supply", // name that appear in Sidebar
+    roles: ['bengkel'],
     submenu: [
       {
         path: '/app/supply',
         name: 'All RFQ',
+        roles: ['bengkel'],
       },
       {
         path: '/app/create-supply',
         name: 'Create RFQ',
+        roles: ['bengkel'],
       },
     ],
   },
-
-  {
-    path: '/app/supplier',
-    icon: <TruckIcon className={iconClasses}/>, 
-    name: 'Supplier',
-  },
-
   {
     path: '/app/people',
     icon: <UsersIcon className={iconClasses}/>, 
     name: 'User',
+    roles: ['bengkel'],
   },
- 
-  // {
-  //   path: '/app/leads', // url
-  //   icon: <InboxArrowDownIcon className={iconClasses}/>, // icon component
-  //   name: 'Leads', // name that appear in Sidebar
-  // },
-  // {
-  //   path: '/app/transactions', // url
-  //   icon: <CurrencyDollarIcon className={iconClasses}/>, // icon component
-  //   name: 'Transactions', // name that appear in Sidebar
-  // },
-  // {
-  //   path: '/app/charts', // url
-  //   icon: <ChartBarIcon className={iconClasses}/>, // icon component
-  //   name: 'Analytics', // name that appear in Sidebar
-  // },
-  // {
-  //   path: '/app/integration', // url
-  //   icon: <BoltIcon className={iconClasses}/>, // icon component
-  //   name: 'Integration', // name that appear in Sidebar
-  // },
-  // {
-  //   path: '/app/calendar', // url
-  //   icon: <CalendarDaysIcon className={iconClasses}/>, // icon component
-  //   name: 'Calendar', // name that appear in Sidebar
-  // },
 
-  // {
-  //   path: '', //no url needed as this has submenu
-  //   icon: <DocumentDuplicateIcon className={`${iconClasses} inline` }/>, // icon component
-  //   name: 'Pages', // name that appear in Sidebar
-  //   submenu : [
-  //     {
-  //       path: '/login',
-  //       icon: <ArrowRightOnRectangleIcon className={submenuIconClasses}/>,
-  //       name: 'Login',
-  //     },
-  //     {
-  //       path: '/register', //url
-  //       icon: <UserIcon className={submenuIconClasses}/>, // icon component
-  //       name: 'Register', // name that appear in Sidebar
-  //     },
-  //     {
-  //       path: '/forgot-password',
-  //       icon: <KeyIcon className={submenuIconClasses}/>,
-  //       name: 'Forgot Password',
-  //     },
-  //     {
-  //       path: '/app/blank',
-  //       icon: <DocumentIcon className={submenuIconClasses}/>,
-  //       name: 'Blank Page',
-  //     },
-  //     {
-  //       path: '/app/404',
-  //       icon: <ExclamationTriangleIcon className={submenuIconClasses}/>,
-  //       name: '404',
-  //     },
-  //   ]
-  // },
-  // {
-  //   path: '', //no url needed as this has submenu
-  //   icon: <Cog6ToothIcon className={`${iconClasses} inline` }/>, // icon component
-  //   name: 'Settings', // name that appear in Sidebar
-  //   submenu : [
-  //     {
-  //       path: '/app/settings-profile', //url
-  //       icon: <UserIcon className={submenuIconClasses}/>, // icon component
-  //       name: 'Profile', // name that appear in Sidebar
-  //     },
-  //     {
-  //       path: '/app/settings-billing',
-  //       icon: <WalletIcon className={submenuIconClasses}/>,
-  //       name: 'Billing',
-  //     },
-  //     {
-  //       path: '/app/settings-team', // url
-  //       icon: <UsersIcon className={submenuIconClasses}/>, // icon component
-  //       name: 'Team Members', // name that appear in Sidebar
-  //     },
-  //   ]
-  // },
-  // {
-  //   path: '', //no url needed as this has submenu
-  //   icon: <DocumentTextIcon className={`${iconClasses} inline` }/>, // icon component
-  //   name: 'Documentation', // name that appear in Sidebar
-  //   submenu : [
-  //     {
-  //       path: '/app/getting-started', // url
-  //       icon: <DocumentTextIcon className={submenuIconClasses}/>, // icon component
-  //       name: 'Getting Started', // name that appear in Sidebar
-  //     },
-  //     {
-  //       path: '/app/features',
-  //       icon: <TableCellsIcon className={submenuIconClasses}/>, 
-  //       name: 'Features',
-  //     },
-  //     {
-  //       path: '/app/components',
-  //       icon: <CodeBracketSquareIcon className={submenuIconClasses}/>, 
-  //       name: 'Components',
-  //     }
-  //   ]
-  // },
-  
+  // supplier menu routes
+  {
+  path: "/app/dashboard-supplier",
+  icon: <TruckIcon className={iconClasses} />,
+  name: "Dashboard Supplier",
+  roles: ['supplier'],
+  },
+  {
+    path: "/app/invoice",
+    icon: <DocumentIcon className={iconClasses} />,
+    name: "Invoice",
+    roles: ['supplier'],
+  },
+  {
+    path: "/app/pesanan",
+    icon: <InboxArrowDownIcon className={iconClasses} />,
+    name: "Pesanan",
+    roles: ['supplier'],
+  },
+
 ]
 
 export default routes
-
-

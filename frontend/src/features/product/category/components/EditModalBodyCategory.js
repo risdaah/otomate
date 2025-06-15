@@ -1,67 +1,80 @@
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { useState } from "react"
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import InputText from '../../../../components/Input/InputText';
 import ErrorText from '../../../../components/Typography/ErrorText';
 import { showNotification } from "../../../common/headerSlice";
-import { editCategory } from '../categorySlice';
-import { CATEGORYDATA } from '../index';
+import { editCategoryApi } from '../categorySlice';
+import { getCategories } from '../categorySlice';
+
 
 function EditModalBodyCategory({ closeModal, id_kategori }) {
-    const dispatch = useDispatch();
-    const [loading, setLoading] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");
-    const [categoryObj, setCategoryObj] = useState(CATEGORYDATA);
+  const dispatch = useDispatch();
+  const categories = useSelector(state => state.Category.categories);
 
-    useEffect(() => {
-        const category = CATEGORYDATA.find((c) => c.id === id_kategori);
-        console.log("Category found:", category);
-        if (category) {
-            setCategoryObj(category);
-        }
-    }, [id_kategori]);
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [categoryObj, setCategoryObj] = useState({
+    id_kategori: "",
+    nama_kategori: ""
+  });
 
-    const saveEditCategory = () => {
-        const editCategoryObj = {
-            id: id_kategori,
-            ...categoryObj,
-        };
-            
-        dispatch(editCategory(editCategoryObj));    
-        dispatch(showNotification({ message: "Edit Category Success!", status: 1 }));   
-        closeModal();
+  // Set data kategori dari store
+  useEffect(() => {
+    const selected = categories.find(c => c.id_kategori === id_kategori);
+    if (selected) {
+      setCategoryObj({
+        id_kategori: selected.id_kategori,
+        nama_kategori: selected.nama_kategori || ""
+      });
+    }
+  }, [id_kategori, categories]);
+
+  const saveEditCategory = async () => {
+    setLoading(true);
+    setErrorMessage("");
+
+    const categoryToSave = {
+      id: categoryObj.id || id_kategori,
+      nama_kategori: categoryObj.nama_kategori
     };
-  
 
-    const updateFormValue = ({ updateType, value }) => {
-        setErrorMessage("");
-        setCategoryObj({ ...categoryObj, [updateType]: value });
-    };    
+    try {
+      await dispatch(editCategoryApi(categoryToSave)).unwrap();
+      dispatch(showNotification({ message: "Edit Category Success!", status: 1 }));
+      await dispatch(getCategories());
+      closeModal();
+    } catch (error) {
+      const errorMsg = typeof error === 'string' ? error : (error.message || JSON.stringify(error));
+      setErrorMessage(errorMsg || "Failed to edit category");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    return (
-        <>
-            <InputText
-                type="text"
-                value={categoryObj.nama}
-                onChange={(e) =>
-                    setCategoryObj({
-                        ...categoryObj,
-                        nama: e.target.value,
-                    })
-                }
-                className="input input-bordered w-full mt-4"
-                labelTitle="Nama Produk" 
-                placeholder={categoryObj.nama}
-                updateFormValue={updateFormValue} 
-            />
+  return (
+    <>
+      <InputText
+        type="text"
+        value={categoryObj.nama_kategori}
+        updateFormValue={({ updateType, value }) => {
+          setErrorMessage("");
+          setCategoryObj(prev => ({ ...prev, [updateType]: value }));
+        }}
+        updateType="nama_kategori"
+        className="input input-bordered w-full mt-4"
+        labelTitle="Nama Kategori"
+        placeholder="Enter category name"
+      />
 
-            <ErrorText styleClass="mt-4">{errorMessage}</ErrorText>
-            <div className="modal-action">
-                <button className="btn btn-ghost" onClick={() => closeModal()}>Cancel</button>
-                <button className="btn btn-primary px-6" onClick={saveEditCategory}>Save</button>
-            </div>
-        </>
-    );
+      <ErrorText styleClass="mt-4">{errorMessage}</ErrorText>
+      <div className="modal-action">
+        <button className="btn btn-ghost" onClick={closeModal}>Cancel</button>
+        <button className="btn btn-primary px-6" onClick={saveEditCategory} disabled={loading}>
+          {loading ? "Saving..." : "Save"}
+        </button>
+      </div>
+    </>
+  );
 }
 
 export default EditModalBodyCategory;

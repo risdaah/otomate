@@ -1,140 +1,98 @@
-import { useState } from "react"
-import { useDispatch } from "react-redux"
-import InputText from '../../../components/Input/InputText'
-import ErrorText from '../../../components/Typography/ErrorText'
-import { showNotification } from "../../common/headerSlice"
-import { addNewUser } from '../peopleSlice';
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import InputText from '../../../components/Input/InputText';
+import ErrorText from '../../../components/Typography/ErrorText';
+import { showNotification } from "../../common/headerSlice";
+import { registerNewSupplier, getUsersContent } from '../peopleSlice';
 
-const INITIAL_USER_OBJ = {  
-    nama: "", 
-    email: "", 
-    password: "",
-    role: "", 
-    profilImg: null
-} 
+const INITIAL_SUPPLIER_OBJ = {
+  nama: "",
+  email: "",
+  password: "",
+  telp: ""
+};
 
-function CreateModalBodyUser({closeModal}){
-    const dispatch = useDispatch()
-    const [loading, setLoading] = useState(false)
-    const [errorMessage, setErrorMessage] = useState("")
-    const [UserObj, setUserObj] = useState(INITIAL_USER_OBJ)
-    const [fileName, setFileName] = useState(""); 
-    const handleImageUpload = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            setFileName(file.name);
-            const fileURL = URL.createObjectURL(file); 
-            setUserObj({ ...UserObj, gambar: fileURL }); 
-        } else {
-            setFileName(""); 
-        }
-    };   
+function CreateModalBodyUser({ closeModal }) {
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [supplierObj, setSupplierObj] = useState(INITIAL_SUPPLIER_OBJ);
 
+  const saveNewSupplier = async () => {
+    if (supplierObj.nama.trim() === "")
+      return setErrorMessage("Nama supplier wajib diisi!");
+    if (supplierObj.email.trim() === "")
+      return setErrorMessage("Email wajib diisi!");
+    if (supplierObj.password.trim() === "")
+      return setErrorMessage("Password wajib diisi!");
+    if (supplierObj.telp.trim() === "")
+      return setErrorMessage("No Telepon wajib diisi!");
 
-    const saveNewUser = () => {
-        if(UserObj.nama.trim() === "") return setErrorMessage("Nama is required!")
-        else if(UserObj.stok.trim() === "") return setErrorMessage("Stok is required!")
-        else {
-            let newUserObj = {
-                "id_user": 4,
-                "nama": UserObj.nama, 
-                "email": UserObj.email,
-                "password": UserObj.password,
-                "role": UserObj.role,
-                "status": UserObj.status,
-            }
-            if (newUserObj.profilImg.startsWith("blob:")) {
-                newUserObj.profilImg = null;
-            }
-            console.log('Dispatching addNewUser', newUserObj);
-            dispatch(addNewUser({ newUserObj }));
-
-            dispatch(showNotification({ message: "New User Added!", status: 1 }))
-            closeModal()
-        }
+    try {
+      setLoading(true);
+      await dispatch(registerNewSupplier(supplierObj)).unwrap();
+      // Refresh data
+      await dispatch(getUsersContent()); 
+      dispatch(showNotification({ message: "Supplier berhasil ditambahkan!", status: 1 }));
+      closeModal();
+    } catch (error) {
+      setErrorMessage(error.message || "Gagal menambahkan supplier");
+    } finally {
+      setLoading(false);
     }
-    
+  };
 
-    const updateFormValue = ({ updateType, value }) => {
-        setErrorMessage("");
-        setUserObj({ ...UserObj, [updateType]: value });
-    };    
+  const updateFormValue = ({ updateType, value }) => {
+    setErrorMessage("");
+    setSupplierObj({ ...supplierObj, [updateType]: value });
+  };
 
-    return(
-        <>
-            <div className="flex items-center justify-between mt-4">
-                <div className="flex items-center rounded-lg p-3">
-                    <div className="avatar">
-                        <div className="mask mask-squircle w-12 h-12 mx-5 my-2">
-                            <img 
-                                src={UserObj.profilImg || "/default.jpeg"} 
-                                alt="Gambar" 
-                            />
-                        </div>
-                    </div>
-                </div>
-                <div className="flex flex-col">
-                    <label htmlFor="userImage" className="label font-bold">
-                        Gambar
-                    </label>
-                    <input
-                        type="file"
-                        id="userImage"
-                        onChange={handleImageUpload}
-                        className="input input-bordered py-2"
-                    />
-                </div>
-            </div>
+  return (
+    <>
+      <InputText
+        type="text"
+        defaultValue={supplierObj.nama}
+        updateType="nama"
+        labelTitle="Nama Supplier"
+        updateFormValue={updateFormValue}
+      />
 
-            <InputText 
-                type="text" 
-                defaultValue={UserObj.nama} 
-                updateType="nama" 
-                labelTitle="Nama User" 
-                updateFormValue={updateFormValue} 
-            />
+      <InputText
+        type="text"
+        defaultValue={supplierObj.email}
+        updateType="email"
+        labelTitle="Email"
+        updateFormValue={updateFormValue}
+      />
 
-            <InputText 
-                type="text" 
-                defaultValue={UserObj.email} 
-                updateType="Email" 
-                labelTitle="Email" 
-                updateFormValue={updateFormValue} 
-            />
+      <InputText
+        type="text"
+        defaultValue={supplierObj.password}
+        updateType="password"
+        labelTitle="Password"
+        updateFormValue={updateFormValue}
+      />
 
-            <InputText 
-                type="text" 
-                defaultValue={UserObj.password} 
-                updateType="Password" 
-                labelTitle="Password" 
-                updateFormValue={updateFormValue} 
-            />
+      <InputText
+        type="text"
+        defaultValue={supplierObj.telp}
+        updateType="telp"
+        labelTitle="No Telepon"
+        updateFormValue={updateFormValue}
+      />
 
-            <div className="form-control mt-3">
-                <label htmlFor="role" className="ml-1">
-                    Role
-                </label>
-                <select
-                    id="role"
-                    value={UserObj.role} 
-                    onChange={(e) => updateFormValue({ updateType: "id_user", value: e.target.value })} 
-                    className="select select-bordered mt-2"
-                >
-                    <option value="" disabled>
-                        Pilih Role
-                    </option>
-                    <option value="Admin">Admin Bengkel</option>
-                    <option value="Supplier">Supplier</option>
-                </select>
-            </div>
+      <ErrorText styleClass="mt-4">{errorMessage}</ErrorText>
 
-            <ErrorText styleClass="mt-4">{errorMessage}</ErrorText>
-            <div className="modal-action">
-                <button className="btn btn-ghost" onClick={() => closeModal()}>Cancel</button>
-                <button className="btn btn-primary px-6" onClick={() => saveNewUser()}>Save</button>
-            </div>
-        </>
-    )
+      <div className="modal-action">
+        <button className="btn btn-ghost" onClick={closeModal}>
+          Cancel
+        </button>
+        <button className={`btn btn-primary px-6 ${loading ? "loading" : ""}`} onClick={saveNewSupplier}>
+          Save
+        </button>
+      </div>
+    </>
+  );
 }
 
-export default CreateModalBodyUser
+export default CreateModalBodyUser;

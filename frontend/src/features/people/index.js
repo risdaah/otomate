@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react"
 import { utils, write } from "xlsx";
 import { saveAs } from "file-saver";
@@ -30,7 +30,9 @@ export const USERDATA = [
 ];
 
 function AllUsers() {
-  const [user] = useState(USERDATA);
+
+  // ✅ Safe default value to avoid undefined error
+  const { users = [], isLoading } = useSelector((state) => state.User || {});
 
   // DROPDOWN
   const [openDropdown, setOpenDropdown] = useState(null);
@@ -52,7 +54,7 @@ function AllUsers() {
 
   // Status
   const getStockStatus = (status) => {
-    if (status === "Active") {
+    if (status?.toLowerCase() === "active") {
         return (
             <div className="py-1 text-l rounded-md text-white border border-green-500">
                 <span className="px-2 font-semibold text-green-500">Active</span>
@@ -74,8 +76,8 @@ function AllUsers() {
   const itemsPerPage = 10; // Jumlah item per halaman
 
   // Filter data berdasarkan teks pencarian
-  const filteredUsers = USERDATA.filter((user) =>
-    user.nama.toLowerCase().includes(searchText.toLowerCase())
+  const filteredUsers = users.filter((user) =>
+    user.User?.nama?.toLowerCase().includes(searchText.toLowerCase())
   );
 
   // Hitung jumlah halaman
@@ -88,7 +90,7 @@ function AllUsers() {
 
   // EXCEL
   const downloadExcel = () => {
-    const worksheet = utils.json_to_sheet(USERDATA); // Ubah data JSON ke format Excel
+    const worksheet = utils.json_to_sheet(users); // Ubah data JSON ke format Excel
     const workbook = utils.book_new(); // Buat workbook baru
     utils.book_append_sheet(workbook, worksheet, "User"); // Tambahkan worksheet ke workbook
   
@@ -109,7 +111,7 @@ function AllUsers() {
   
     // Data tabel
     const tableColumn = ["Id_User", "Nama", "Email", "Role", "Status"];
-    const tableRows = USERDATA.map(item => [
+    const tableRows = users.map(item => [
       item.id_user,
       item.nama,
       item.email,
@@ -135,8 +137,8 @@ function AllUsers() {
   }
 
   // EDIT
-  const openEditUser = () => {
-    dispatch(openModal({title : "Edit User", bodyType : MODAL_BODY_TYPES.USER_EDIT}))
+  const openEditUser = (user) => {
+    dispatch(openModal({ title: "Edit User", bodyType: MODAL_BODY_TYPES.USER_EDIT, extraObject: user }));
   }
 
   // VIEW
@@ -149,32 +151,31 @@ function AllUsers() {
   };
 
   // DELETE
-  const deleteUser = (index) => {
+  const deleteUser = (id_user) => {
     dispatch(openModal({
-        title: "Delete",
-        bodyType: MODAL_BODY_TYPES.CONFIRMATION,
-        extraObject: { 
-            message: `Are you sure you want to delete this user?`, 
-            type: CONFIRMATION_MODAL_CLOSE_TYPES.USER_DELETE, 
-            index,
-            onConfirm: () => handleDeleteConfirmation(index) 
-        }
+      title: "Delete",
+      bodyType: MODAL_BODY_TYPES.CONFIRMATION,
+      extraObject: { 
+        message: `Are you sure you want to delete this user?`, 
+        type: CONFIRMATION_MODAL_CLOSE_TYPES.USER_DELETE
+      }
     }));
   };
 
-  const handleDeleteConfirmation = async (index) => {
-      dispatch(deleteUser(index)); 
 
-      // Tampilkan notifikasi
-      dispatch(showNotification({
-          message: "User deleted successfully!",
-          status: 1 
-      }));
+  const handleDeleteConfirmation = (id_user) => {
+    dispatch(deleteUser(id_user));
+
+    dispatch(showNotification({
+      message: "User deleted successfully!",
+      status: 1 
+    }));
   };
+
 
   return (
     <>
-      <TitleCard title="User Management">
+      <TitleCard title="Supplier Account Management">
 
         <div className="flex justify-between items-center mb-4">
 
@@ -217,8 +218,9 @@ function AllUsers() {
             <thead>
                 <tr>
                 <th className="text-center text-primary text-base">Code</th>   
-                <th className="text-center text-primary text-base">User</th>              
+                <th className="text-center text-primary text-base">Nama</th>              
                 <th className="text-center text-primary text-base">Email</th>
+                <th className="text-center text-primary text-base">Telp</th>
                 <th className="text-center text-primary text-base">Role</th>
                 <th className="text-center text-primary text-base">Status</th>
                 <th className="text-center text-primary text-base">Action</th>
@@ -228,22 +230,11 @@ function AllUsers() {
                 {currentItems.map((user, index) => (
                   <tr key={index}>
                     <td className="text-center">{user.id_user}</td>
-                    <td>
-                        <div className="flex items-center space-x-3 ml-10">
-                            <div className="avatar">
-                                    <div className="mask mask-squircle w-12 h-12 mr-4">
-                                        <img  src={user.profilImg}
-                                              alt={user.nama} />
-                                    </div>
-                            </div>
-                            <div>
-                                    <div className="font-bold">{user.nama}</div>
-                                </div>
-                            </div>
-                        </td>
-                    <td className="text-center">{user.email}</td>                    
-                    <td className="text-center">{user.role}</td>
-                    <td className="text-center">{getStockStatus(user.status)}</td>
+                    <td className="text-center">{user.User.nama}</td>
+                    <td className="text-center">{user.User.email}</td>
+                    <td className="text-center">{user.telp}</td>                     
+                    <td className="text-center">{user.User.role}</td>
+                    <td className="text-center">{getStockStatus(user.User?.status)}</td>
                     <td>
                       <div className="dropdown dropdown-end ml-12">
                         <button onClick={() => handleActionClick(index)}>
@@ -256,7 +247,7 @@ function AllUsers() {
                           {/* View */}
                           <div className="flex items-center ml-2">
                               <Eye className="h-5 w-5 inline-block" />
-                              <li onClick={() => openViewUser(user.id_produk)}>    
+                              <li onClick={() => openViewUser(user)}>    
                                   <span>View</span>
                               </li>
                           </div>
@@ -264,18 +255,18 @@ function AllUsers() {
                           {/* Edit */}
                           <div className="flex items-center ml-2">
                             <PencilSquare className="h-5 w-5 inline-block" />
-                            <li onClick={() => openEditUser(user.id_produk)}> 
+                            <li onClick={() => openEditUser(user)}>
                                 <span>Edit</span>
                             </li>
                           </div>
 
                           {/* Delete */}
-                          <div className="flex items-center ml-2">
+                          {/* <div className="flex items-center ml-2">
                               <Trash className="h-5 w-5 inline-block" />
                               <li onClick={() => deleteUser(index)}>  
                                   <span>Delete</span>
                               </li>
-                          </div>                         
+                          </div>                          */}
                         </ul>
                       </div>
                     </td>

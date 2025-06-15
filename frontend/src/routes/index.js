@@ -19,101 +19,139 @@ const DocFeatures = lazy(() => import('../pages/DocFeatures'))
 const DocComponents = lazy(() => import('../pages/DocComponents'))
 
 // Added
-const AllProduct = lazy(() => import('../pages/protected/AllProduct'));
-const Category = lazy(() => import('../pages/protected/Category'));
-const Supply = lazy(() => import('../pages/protected/Supply'));
-const CreateSupply = lazy(() => import('../pages/protected/CreateSupply'));
-const Supplier = lazy(() => import('../pages/protected/Supplier'));
-const People = lazy(() => import('../pages/protected/People'));
+const AllProduct = lazy(() => import('../pages/protected/AllProduct'))
+const Category = lazy(() => import('../pages/protected/Category'))
+const Supply = lazy(() => import('../pages/protected/Supply'))
+const CreateSupply = lazy(() => import('../pages/protected/CreateSupply'))
+const Supplier = lazy(() => import('../pages/protected/Supplier'))
+const People = lazy(() => import('../pages/protected/People'))
+
+// Supplier
+const DashboardSupplier = lazy(() => import('../pages/protected/DashboardSupplier'))
+const Invoice = lazy(() => import('../pages/protected/Invoice'))
+const Pesanan = lazy(() => import('../pages/protected/Pesanan'))
 
 const routes = [
   {
-    path: '/dashboard', // the url
-    component: Dashboard, // view rendered
+    path: '/dashboard',
+    component: Dashboard,
+    allowedRoles: ['bengkel'],
   },
   {
-    path: '/welcome', // the url
-    component: Welcome, // view rendered
+    path: '/dashboard-supplier',
+    component: DashboardSupplier,
+    allowedRoles: ['supplier'],
+  },
+  {
+    path: '/welcome',
+    component: Welcome,
+    allowedRoles: ['supplier', 'bengkel'],
   },
   {
     path: '/leads',
     component: Leads,
+    allowedRoles: ['bengkel'],
   },
   {
     path: '/settings-team',
     component: Team,
+    allowedRoles: ['bengkel'],
   },
   {
     path: '/calendar',
     component: Calendar,
+    allowedRoles: ['bengkel'],
   },
   {
     path: '/transactions',
     component: Transactions,
+    allowedRoles: ['bengkel'],
   },
   {
     path: '/settings-profile',
     component: ProfileSettings,
+    allowedRoles: ['bengkel', 'supplier'],
   },
   {
     path: '/settings-billing',
     component: Bills,
+    allowedRoles: ['bengkel'],
   },
   {
     path: '/getting-started',
     component: GettingStarted,
+    allowedRoles: ['bengkel', 'supplier'],
   },
   {
     path: '/features',
     component: DocFeatures,
+    allowedRoles: ['bengkel', 'supplier'],
   },
   {
     path: '/components',
     component: DocComponents,
+    allowedRoles: ['bengkel', 'supplier'],
   },
   {
     path: '/integration',
     component: Integration,
+    allowedRoles: ['bengkel', 'supplier'],
   },
   {
     path: '/charts',
     component: Charts,
+    allowedRoles: ['bengkel', 'supplier'],
   },
   {
     path: '/404',
     component: Page404,
+    allowedRoles: ['bengkel', 'supplier'],
   },
   {
     path: '/blank',
     component: Blank,
+    allowedRoles: ['bengkel', 'supplier'],
   },
-
-  // Added
   {
     path: '/all-product',
     component: AllProduct,
+    allowedRoles: ['bengkel'],
   },
   {
     path: '/category',
     component: Category,
+    allowedRoles: ['bengkel'],
   },
   {
     path: '/supply',
     component: Supply,
+    allowedRoles: ['bengkel'],
   },
   {
     path: '/create-supply',
     component: CreateSupply,
+    allowedRoles: ['bengkel'],
   },
   {
     path: '/supplier',
     component: Supplier,
+    allowedRoles: ['bengkel'],
   },
   {
     path: '/people',
     component: People,
+    allowedRoles: ['bengkel'],
   },
-
+  {
+    path: '/invoice',
+    component: Invoice,
+    allowedRoles: ['supplier'],
+  },
+  {
+    path: '/pesanan',
+    component: Pesanan,
+    allowedRoles: ['supplier'],
+  },
 ]
 
 export default routes

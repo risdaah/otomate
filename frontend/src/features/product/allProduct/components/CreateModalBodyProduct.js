@@ -1,138 +1,152 @@
-import { useState } from "react"
-import { useDispatch } from "react-redux"
-import InputText from '../../../../components/Input/InputText'
-import ErrorText from '../../../../components/Typography/ErrorText'
-import { showNotification } from "../../../common/headerSlice"
-import { addNewProduct } from '../productSlice';
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import InputText from "../../../../components/Input/InputText";
+import ErrorText from "../../../../components/Typography/ErrorText";
+import { showNotification } from "../../../common/headerSlice";
+import { createNewProduct, fetchKategori, fetchMobil, fetchJenisStok, getProductsContent } from "../productSlice";
 
-const INITIAL_PRODUCT_OBJ = {  
-    nama: "", 
-    stok: "", 
-    harga: "", 
-    gambar: null
-} 
+const INITIAL_PRODUCT_OBJ = {
+  nama: "",
+  stok: "",
+  harga: "",
+  id_kategori: "",
+  id_mobil: "",
+  id_jenis_stok: ""
+};
 
-function CreateModalBodyProduct({closeModal}){
-    const dispatch = useDispatch()
-    const [loading, setLoading] = useState(false)
-    const [errorMessage, setErrorMessage] = useState("")
-    const [ProductObj, setProductObj] = useState(INITIAL_PRODUCT_OBJ)
-    const [fileName, setFileName] = useState(""); 
-    const handleImageUpload = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            setFileName(file.name);
-            const fileURL = URL.createObjectURL(file); 
-            setProductObj({ ...ProductObj, gambar: fileURL }); 
-        } else {
-            setFileName(""); 
-        }
-    };   
+function CreateModalBodyProduct({ closeModal }) {
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [ProductObj, setProductObj] = useState(INITIAL_PRODUCT_OBJ);
+
+  // Ambil data dari Redux store
+  const { kategoriList, mobilList, jenisStokList } = useSelector((state) => state.Product);
+
+  // Fetch hanya jika data belum ada
+  useEffect(() => {
+    if (kategoriList.length === 0) dispatch(fetchKategori());
+    if (mobilList.length === 0) dispatch(fetchMobil());
+    if (jenisStokList.length === 0) dispatch(fetchJenisStok());
+  }, [dispatch, kategoriList, mobilList, jenisStokList]);
+
+  const updateFormValue = ({ updateType, value }) => {
+    setErrorMessage("");
+    setProductObj({ ...ProductObj, [updateType]: value });
+  };
+
+  const saveNewProduct = async () => {
+    const { nama, stok, harga, id_kategori, id_mobil, id_jenis_stok } = ProductObj;
+
+    if (!nama.trim()) return setErrorMessage("Nama produk wajib diisi");
+    if (!stok.trim()) return setErrorMessage("Stok produk wajib diisi");
+
+    const newProduct = {
+      nama,
+      stok,
+      harga,
+      id_kategori,
+      id_mobil,
+      id_jenis_stok,
+    };
+
+    await dispatch(createNewProduct(newProduct));
+    await dispatch(getProductsContent());
+    await dispatch(showNotification({ message: "Produk berhasil ditambahkan!", status: 1 }));
+    closeModal();
+  };
 
 
-    const saveNewProduct = () => {
-        if(ProductObj.nama.trim() === "") return setErrorMessage("Nama is required!")
-        else if(ProductObj.stok.trim() === "") return setErrorMessage("Stok is required!")
-        else {
-            let newProductObj = {
-                "id_produk": 1, 
-                "id_kategori": 1, 
-                "nama": ProductObj.nama, 
-                "stok": ProductObj.stok,
-                "harga": ProductObj.harga,
-            }
-            if (newProductObj.gambar.startsWith("blob:")) {
-                newProductObj.gambar = null;
-            }
-            console.log('Dispatching addNewProduct', newProductObj);
-            dispatch(addNewProduct({ newProductObj }));
+  return (
+    <>
+      <InputText
+        type="text"
+        defaultValue={ProductObj.nama}
+        updateType="nama"
+        labelTitle="Nama Produk"
+        updateFormValue={updateFormValue}
+      />
 
-            dispatch(showNotification({ message: "New Product Added!", status: 1 }))
-            closeModal()
-        }
-    }
-    
+      <InputText
+        type="text"
+        defaultValue={ProductObj.stok}
+        updateType="stok"
+        labelTitle="Stok Produk"
+        updateFormValue={updateFormValue}
+      />
 
-    const updateFormValue = ({ updateType, value }) => {
-        setErrorMessage("");
-        setProductObj({ ...ProductObj, [updateType]: value });
-    };    
+      <InputText
+        type="text"
+        defaultValue={ProductObj.harga}
+        updateType="harga"
+        labelTitle="Harga Produk"
+        updateFormValue={updateFormValue}
+      />
 
-    return(
-        <>
-            <div className="flex items-center justify-between mt-4">
-                <div className="flex items-center rounded-lg p-3">
-                    <div className="avatar">
-                        <div className="mask mask-squircle w-12 h-12 mx-5 my-2">
-                            <img 
-                                src={ProductObj.gambar || "/default.jpeg"} 
-                                alt="Gambar" 
-                            />
-                        </div>
-                    </div>
-                </div>
-                <div className="flex flex-col">
-                    <label htmlFor="productImage" className="label font-bold">
-                        Gambar
-                    </label>
-                    <input
-                        type="file"
-                        id="productImage"
-                        onChange={handleImageUpload}
-                        className="input input-bordered py-2"
-                    />
-                </div>
-            </div>
+      <div className="form-control mt-3">
+        <label htmlFor="kategori" className="ml-1">
+          Kategori
+        </label>
+        <select
+          id="kategori"
+          value={ProductObj.id_kategori}
+          onChange={(e) => updateFormValue({ updateType: "id_kategori", value: e.target.value })}
+          className="select select-bordered mt-2"
+        >
+          <option value="">Pilih Kategori</option>
+          {kategoriList.map((kategori) => (
+            <option key={kategori.id_kategori} value={kategori.id_kategori}>
+              {kategori.nama_kategori}
+            </option>
+          ))}
+        </select>
+      </div>
 
-            <InputText 
-                type="text" 
-                defaultValue={ProductObj.nama} 
-                updateType="nama" 
-                labelTitle="Nama Produk" 
-                updateFormValue={updateFormValue} 
-            />
+      <div className="form-control mt-3">
+        <label htmlFor="mobil" className="ml-1">
+          Mobil
+        </label>
+        <select
+          id="mobil"
+          value={ProductObj.id_mobil}
+          onChange={(e) => updateFormValue({ updateType: "id_mobil", value: e.target.value })}
+          className="select select-bordered mt-2"
+        >
+          <option value="">Pilih Mobil</option>
+          {mobilList.map((mobil) => (
+            <option key={mobil.id_mobil} value={mobil.id_mobil}>
+              {mobil.nama_mobil}
+            </option>
+          ))}
+        </select>
+      </div>
 
-            <InputText 
-                type="text" 
-                defaultValue={ProductObj.stok} 
-                updateType="Stok" 
-                labelTitle="Stok Produk" 
-                updateFormValue={updateFormValue} 
-            />
+      <div className="form-control mt-3">
+        <label htmlFor="jenisStok" className="ml-1">
+          Jenis Stok
+        </label>
+        <select
+          id="jenisStok"
+          value={ProductObj.id_jenis_stok}
+          onChange={(e) => updateFormValue({ updateType: "id_jenis_stok", value: e.target.value })}
+          className="select select-bordered mt-2"
+        >
+          <option value="">Pilih Jenis Stok</option>
+          {jenisStokList.map((jenis) => (
+            <option key={jenis.id_jenis_stok} value={jenis.id_jenis_stok}>
+              {jenis.jenis}
+            </option>
+          ))}
+        </select>
+      </div>
 
-            <InputText 
-                type="text" 
-                defaultValue={ProductObj.harga} 
-                updateType="Harga" 
-                labelTitle="Harga Produk" 
-                updateFormValue={updateFormValue} 
-            />
-
-            <div className="form-control mt-3">
-                <label htmlFor="kategori" className="ml-1">
-                    Kategori
-                </label>
-                <select
-                    id="kategori"
-                    value={ProductObj.role} 
-                    onChange={(e) => updateFormValue({ updateType: "id_kategori", value: e.target.value })} 
-                    className="select select-bordered mt-2"
-                >
-                    <option value="" disabled>
-                        Pilih Kategori
-                    </option>
-                    <option value="Admin">NON STOK</option>
-                    <option value="Manager">STOK BENGKEL</option>
-                </select>
-            </div>
-
-            <ErrorText styleClass="mt-4">{errorMessage}</ErrorText>
-            <div className="modal-action">
-                <button className="btn btn-ghost" onClick={() => closeModal()}>Cancel</button>
-                <button className="btn btn-primary px-6" onClick={() => saveNewProduct()}>Save</button>
-            </div>
-        </>
-    )
+      <ErrorText styleClass="mt-4">{errorMessage}</ErrorText>
+      <div className="modal-action">
+        <button className="btn btn-ghost" onClick={closeModal}>Cancel</button>
+        <button className="btn btn-primary px-6" onClick={saveNewProduct}>Save</button>
+      </div>
+    </>
+  );
 }
 
-export default CreateModalBodyProduct
+export default CreateModalBodyProduct;

@@ -1,8 +1,15 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
 
-export const getSupplysContent = createAsyncThunk('/supplys/content', async () => {
-	const response = await axios.get('https://reqres.in/api/users?page=1', {})
+const api = axios.create({
+  baseURL: 'http://localhost:5000/api', // Ganti kalau beda
+  withCredentials: true, // kalau pakai cookie auth
+});
+
+export const getSupplysContent = createAsyncThunk('Supply/getSupplysContent', async () => {
+	console.log('Thunk getSupplysContent started');
+	const response = await api.get('/pesanan-detail');
+	console.log('API response:', response);
 	return response.data;
 })
 
@@ -35,7 +42,7 @@ export const supplysSlice = createSlice({
             state.isLoading = true;
         },
         [getSupplysContent.fulfilled]: (state, action) => {
-            state.supplys = action.payload.data;
+            state.supplys = action.payload; // ✅ Langsung assign array-nya
             state.isLoading = false;
         },
         [getSupplysContent.rejected]: (state) => {
