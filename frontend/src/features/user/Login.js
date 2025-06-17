@@ -100,7 +100,7 @@ function Login() {
             <LandingIntro />
           </div>
           <div className="py-24 px-10">
-            <h2 className="text-2xl font-bold mb-2 text-center">Login</h2>
+            <h2 className="text-2xl font-bold mb-2 text-center text-primary">LOGIN</h2>
             <form onSubmit={submitForm}>
               <div className="mb-4">
                 <InputText
@@ -122,13 +122,13 @@ function Login() {
                 />
               </div>
 
-              <div className="text-right text-primary">
+              {/* <div className="text-right text-primary">
                 <Link to="/forgot-password">
                   <span className="text-sm hover:text-primary hover:underline cursor-pointer transition duration-200">
                     Forgot Password?
                   </span>
                 </Link>
-              </div>
+              </div> */}
 
               <ErrorText styleClass="mt-8">{errorMessage}</ErrorText>
 
@@ -139,14 +139,14 @@ function Login() {
                 Login
               </button>
 
-              <div className="text-center mt-4">
+              {/* <div className="text-center mt-4">
                 Don't have an account yet?{" "}
                 <Link to="/register">
                   <span className="hover:text-primary hover:underline cursor-pointer transition duration-200">
                     Register
                   </span>
                 </Link>
-              </div>
+              </div> */}
             </form>
           </div>
         </div>
