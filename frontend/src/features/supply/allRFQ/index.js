@@ -21,6 +21,8 @@ import { openRightDrawer } from '../../common/rightDrawerSlice';
 import { showNotification } from "../../common/headerSlice";
 import { openModal } from "../../common/modalSlice";
 import { deleteSupply, editSupply, getSupplysContent } from "../../supply/allRFQ/supplySlice";
+import { downloadInvoicePDF } from "../../invoice/invoiceSlice";
+// Removed duplicate import of useDispatch
 import { RIGHT_DRAWER_TYPES, CONFIRMATION_MODAL_CLOSE_TYPES, MODAL_BODY_TYPES } from '../../../utils/globalConstantUtil';
 import CreateSupply from "../createRFQ";
 
@@ -242,9 +244,32 @@ function Supply() {
                               <li onClick={() => openViewSupply(supply)}>  
                                   <span>View</span>
                               </li>
-                              
                           </div>
-                          
+                  { /* Download Invoice - only if status accepted */ }
+                  { supply.status === "accepted" && (
+                    <div className="flex items-center ml-2 cursor-pointer" onClick={async () => {
+                      try {
+                        const pdfBlob = await downloadInvoicePDF(supply.id_pesanan)();
+                        const url = window.URL.createObjectURL(new Blob([pdfBlob], { type: 'application/pdf' }));
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.setAttribute('download', `invoice_${supply.id_pesanan}.pdf`);
+                        document.body.appendChild(link);
+                        link.click();
+                        link.parentNode.removeChild(link);
+                        window.URL.revokeObjectURL(url);
+                      } catch (error) {
+                        console.error('Failed to download invoice PDF:', error);
+                        alert('Failed to download invoice PDF');
+                      }
+                    }}>
+                      <DocumentText className="h-5 w-5 inline-block mr-1" />
+                      <li>
+                        <span>Download Invoice</span>
+                      </li>
+                    </div>
+                  )}
+                                            
                           {/* Edit */}
                           {/* <div className="flex items-center ml-2">
                             <PencilSquare className="h-5 w-5 inline-block" />

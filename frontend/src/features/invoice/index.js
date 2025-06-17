@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
+import axios from 'axios';
 import { useDispatch, useSelector } from "react-redux";
 import TitleCard from "../../components/Cards/TitleCard";
 import SearchBar from "../../components/Input/SearchBar";
-import { fetchInvoiceBySupplier } from "./invoiceSlice";
+import { fetchInvoiceBySupplier, downloadInvoicePDF, acceptPesanan } from "./invoiceSlice";
 
 const Invoice = () => {
   const dispatch = useDispatch();
@@ -43,6 +44,43 @@ const Invoice = () => {
 
   const closeModal = () => {
     setSelectedInvoice(null);
+  };
+
+
+
+  // New handler to download invoice PDF
+  const handleDownloadPDF = async (id_invoice) => {
+    try {
+      const response = await axios.get(`http://localhost:5000/api/invoice/${id_invoice}/download`, {
+        responseType: 'blob',
+      });
+      const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `invoice_${id_invoice}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Failed to download invoice PDF:', error);
+      if (error.response && error.response.status === 404) {
+        alert('Invoice not found for download.');
+      } else {
+        alert('Failed to download invoice PDF');
+      }
+    }
+  };
+
+  const handleAcceptPesanan = (id_pesanan) => {
+    dispatch(acceptPesanan(id_pesanan))
+      .unwrap()
+      .then(() => {
+        alert('Pesanan accepted successfully');
+      })
+      .catch((error) => {
+        alert('Failed to accept pesanan: ' + error);
+      });
   };
 
   return (
@@ -89,12 +127,26 @@ const Invoice = () => {
                     Rp {Number(invoice.Pesanan?.total).toLocaleString("id-ID")}
                   </td>
                   <td className="text-center">{invoice.status}</td>
-                  <td className="text-center">
+                  <td className="text-center space-x-2">
                     <button
                       onClick={() => handleViewDetail(invoice)}
                       className="border btn-sm border-blue-500 text-blue-500 rounded-md px-3 py-1 hover:bg-blue-500 hover:text-white"
                     >
                       View
+                    </button>
+                    {invoice.status === 'unpaid' && (
+                      <button
+                        onClick={() => handleAcceptPesanan(invoice.Pesanan.id_pesanan)}
+                        className="border btn-sm border-green-600 text-green-600 rounded-md px-3 py-1 hover:bg-green-600 hover:text-white"
+                      >
+                        Accept
+                      </button>
+                    )}
+                    <button
+                      onClick={() => handleDownloadPDF(invoice.id_invoice)}
+                      className="border btn-sm border-green-500 text-green-500 rounded-md px-3 py-1 hover:bg-green-500 hover:text-white"
+                    >
+                      Download
                     </button>
                   </td>
                 </tr>
