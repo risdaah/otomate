@@ -55,6 +55,9 @@ router.get('/invoice-pesanan/:id_supplier', invoiceController.getAllInvoiceBySup
 router.post('/invoice/:id/acceptPesanan', invoiceController.acceptPesanan);
 router.post('/invoice/:id/rejectPesanan', invoiceController.rejectPesanan);
 
+// New route for downloading invoice PDF
+router.get('/invoice/:id/download', invoiceController.downloadInvoicePDF);
+
 // mobil
 router.get('/mobil', mobilController.getAllMobil);
 
