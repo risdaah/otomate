@@ -1,6 +1,6 @@
 function Title({className, children}){
     return(
-        <p className={`text-2xl font-bold  ${className}`}>{children}</p>
+        <p className={`text-2xl font-bold text-primary ${className}`}>{children}</p>
     )
 }
 

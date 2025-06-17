@@ -34,8 +34,7 @@ function LineChart(){
     },
   };
 
-  
-  const labels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const labels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   // const labels = ['Sunday', 'Monaday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
   const data = {
@@ -64,7 +63,7 @@ function LineChart(){
   
 
     return(
-      <TitleCard title={"Revenue Cost"}>
+      <TitleCard title={"total Revenue"}>
           <Line data={data} options={options}/>
       </TitleCard>
     )

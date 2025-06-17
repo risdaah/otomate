@@ -165,7 +165,7 @@ const CreatePurchase = () => {
 
       {/* Tabel Produk */}
       <table className="w-full border-collapse border border-gray-300 mb-6">
-        <thead className="bg-gray-200">
+        <thead className="bg-primary text-white">
           <tr>
             <th className="border px-4 py-2">#</th>
             <th className="border px-4 py-2 text-left">Produk</th>
@@ -229,7 +229,7 @@ const CreatePurchase = () => {
 
       {/* Tombol Submit */}
       <div className="mt-8">
-        <button className="btn btn-primary float-right" onClick={handleSubmit}>
+        <button className="btn btn-primary text-white float-right" onClick={handleSubmit}>
           Simpan Pesanan
         </button>
       </div>

@@ -182,7 +182,7 @@ function AllProducts() {
 
         <div className="flex items-center space-x-2">
           <button
-            className="border btn-sm border-primary text-primary rounded-md px-4 py-2 flex items-center space-x-1 hover:bg-primary hover:text-white transition"
+            className="border btn-sm border-accent text-accent rounded-md px-4 py-2 flex items-center space-x-1 hover:bg-accent hover:text-white transition"
             onClick={openProductFilter}
           >
             <Funnel className="h-5 w-5" />
@@ -285,7 +285,7 @@ function AllProducts() {
             {Array.from({ length: totalPages }, (_, i) => (
               <button
                 key={i + 1}
-                className={`join-item btn btn-sm ${currentPage === i + 1 ? "btn-primary btn-active" : ""}`}
+                className={`join-item btn btn-sm ${currentPage === i + 1 ? "btn-primary text-white btn-active" : ""}`}
                 onClick={() => setCurrentPage(i + 1)}
               >
                 {i + 1}

@@ -23,26 +23,31 @@ function BarChart(){
         },
       };
       
-      const labels = ['Filter Oli Kijang', 'Filter Oli Agya', 'Filter Oli APV', 'Filter Oli Calya'];
+      const labels = ['Week 1', 'Week 2', 'MWeek 3', 'Week 4'];
       
       const data = {
         labels,
         datasets: [
           {
-            label: 'Produk',
+            label: 'Paid',
             data: labels.map(() => { return Math.random() * 1000 + 500 }),
             backgroundColor: 'rgba(127, 0, 0, 1)',
           },
           {
-            label: 'Mobil',
+            label: 'Pending',
             data: labels.map(() => { return Math.random() * 1000 + 500 }),
             backgroundColor: 'rgba(53, 162, 235, 1)',
+          },
+         {
+            label: 'Unpaid',
+            data: labels.map(() => { return Math.random() * 1000 + 500 }),
+            backgroundColor: 'rgb(254, 102, 103)',
           },
         ],
       };
 
     return(
-      <TitleCard title={"Stock Produk"}>
+      <TitleCard title={"Status Invoice"}>
             <Bar options={options} data={data} />
       </TitleCard>
 

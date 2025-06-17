@@ -13,10 +13,10 @@ module.exports = {
     themes: [
       {
         light: {
-          primary: "#4338ca",
+          primary: "#7F0000",
           prm2: "#7B74DA",
-          secondary: "#ECEAFF",
-          accent: "#37cdbe",
+          secondary: "#FFC9C9",
+          accent: "#16A6D6",
           neutral: "#3d4451",
           accentcont :"#000000",
           "base-100": "#ffffff",
@@ -24,10 +24,10 @@ module.exports = {
       },  
       {
         dark: {
-          primary: "#4338ca",
+          primary: "#FE6667",
           prm2: "#E9E7FF",
           secondary: "#4338ca",
-          accent: "#1fb2a6",
+          accent: "#16A6D6",
           neutral: "#2a2e37",
           accentcont :"#5A607F",
           "base-100": "#191d24",

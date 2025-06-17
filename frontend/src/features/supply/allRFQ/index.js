@@ -72,8 +72,9 @@ function Supply() {
 
   // Status
   const getPaymentStatus = (status) => {
-    if(status  === "Paid")return <div className="py-1 text-l font-semibold rounded-md text-green-500 border border-green-500">{status}</div>
-    if(status  === "Pending")return <div className="py-1 text-l font-semibold rounded-md text-gray-500 border border-gray-500">{status}</div>
+    if(status  === "rejected") return <div className="py-1 text-l font-semibold rounded-md text-red-500 border border-red-500">{status}</div>
+    if(status  === "pending")return <div className="py-1 text-l font-semibold rounded-md text-gray-500 border border-gray-500">{status}</div>
+    if(status  === "accepted")return <div className="py-1 text-l font-semibold rounded-md text-green-500 border border-green-500">{status}</div>
     else return <div className="badge badge-ghost">{status}</div>
   }
 
@@ -287,7 +288,7 @@ function Supply() {
               {Array.from({ length: totalPages }, (_, i) => (
                 <button
                   key={i + 1}
-                  className={`join-item btn btn-sm ${currentPage === i + 1 ? 'btn-primary btn-active' : ''}`}
+                  className={`join-item btn btn-sm ${currentPage === i + 1 ? 'btn-primary text-white btn-active' : ''}`}
                   onClick={() => setCurrentPage(i + 1)}
                 >
                   {i + 1}
