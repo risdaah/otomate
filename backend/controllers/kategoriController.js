@@ -68,3 +68,13 @@ exports.getKategoriById = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+exports.getKategoriCount = async (req, res) => {
+  try {
+    const count = await Kategori.count();
+    res.status(200).json({ totalKategori: count });
+  } catch (error) {
+    console.error('Error counting kategori:', error);
+    res.status(500).json({ message: 'Failed to count kategori' });
+  }
+};

@@ -143,15 +143,9 @@ const rejectPesanan = async (req, res) => {
   }
 };
 
-module.exports = {
-  getAllInvoice,
-  getInvoiceById,
-  acceptPesanan,
-  rejectPesanan,
-  getAllInvoiceBySupplier,
-  
-  // New method to generate and send invoice PDF
-  downloadInvoicePDF: async (req, res) => {
+// function downlaod invoice
+// New method to generate and send invoice PDF
+ const downloadInvoicePDF =  async (req, res) => {
     try {
       const { id } = req.params;
       // Try to find invoice by id_invoice first
@@ -228,6 +222,32 @@ module.exports = {
       res.status(500).json({ message: 'Failed to generate invoice PDF' });
     }
   }
+
+const countInvoiceBySupplierId = async (req, res) => {
+  try {
+    const { id_supplier } = req.params;
+    // Count invoices where the related Pesanan has the given id_supplier
+    const count = await Invoice.count({
+      include: [{
+        model: require('../models').Pesanan,
+        where: { id_supplier }
+      }]
+    });
+    res.status(200).json({ count });
+  } catch (error) {
+    console.error('Error counting invoice by supplier id:', error);
+    res.status(500).json({ message: 'Failed to count invoice' });
+  }
+};
+
+module.exports = {
+  getAllInvoice,
+  getInvoiceById,
+  acceptPesanan,
+  rejectPesanan,
+  getAllInvoiceBySupplier,
+  downloadInvoicePDF,
+  countInvoiceBySupplierId
 };
   
   

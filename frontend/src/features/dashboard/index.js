@@ -14,22 +14,52 @@ import DashboardTopBar from './components/DashboardTopBar'
 import { useDispatch } from 'react-redux'
 import {showNotification} from '../common/headerSlice'
 import DoughnutChart from './components/DoughnutChart'
-import { useState } from 'react'
-
-const statsData = [
-
-    {title : "Total Cost", value : "Rp.3,5Jt", icon : <CreditCardIcon className='w-8 h-8'/>, description : "Current month"},
-    {title : "Produk", value : "5 Item", icon : <CircleStackIcon className='w-8 h-8'/>, description : "Current month"},
-    {title : "Kategori", value : "4 Jenis", icon : <SwatchIcon className='w-8 h-8'/>, description : "Current month"},
-    {title : "Jumlah Pengguna", value : "3 Orang", icon : <UserGroupIcon className='w-8 h-8'/>, description : "Current perriod"},
-]
-
-
+import { useState, useEffect } from 'react'
 
 function Dashboard(){
 
     const dispatch = useDispatch()
- 
+
+    const [statsData, setStatsData] = useState([
+        {title : "Total Cost", value : "Loading...", icon : <CreditCardIcon className='w-8 h-8'/>, description : "Current month"},
+        {title : "Produk", value : "Loading...", icon : <CircleStackIcon className='w-8 h-8'/>, description : "Current month"},
+        {title : "Kategori", value : "Loading...", icon : <SwatchIcon className='w-8 h-8'/>, description : "Current month"},
+        {title : "Supplier", value : "Loading...", icon : <UserGroupIcon className='w-8 h-8'/>, description : "Current period"},
+    ])
+
+    useEffect(() => {
+        async function fetchStats() {
+            try {
+                const [produkRes, kategoriRes, supplierRes, costRes] = await Promise.all([
+                    fetch('http://localhost:5000/api/produk-count'),
+                    fetch('http://localhost:5000/api/kategori-count'),
+                    fetch('http://localhost:5000/api/supplier-count'),
+                    fetch('http://localhost:5000/api/total-count')
+                ])
+
+                const produkData = await produkRes.json()
+                const kategoriData = await kategoriRes.json()
+                const supplierData = await supplierRes.json()
+                const costData = await costRes.json()
+
+                setStatsData([
+                    {title : "Total Cost", value : `Rp.${costData.totalCost.toLocaleString()}`, description : "Current"},
+                    {title : "Produk", value : `${produkData.totalProduk} Item`, icon : <CircleStackIcon className='w-8 h-8'/>, description : "Current"},
+                    {title : "Kategori", value : `${kategoriData.totalKategori} Jenis`, icon : <SwatchIcon className='w-8 h-8'/>, description : "Current"},
+                    {title : "Supplier", value : `${supplierData.totalSuppliers} Supplier`, icon : <UserGroupIcon className='w-8 h-8'/>, description : "Current period"},
+                ])
+            } catch (error) {
+                dispatch(showNotification({message : `Failed to load dashboard stats: ${error.message}`, status : 0}))
+                setStatsData([
+                    {title : "Total Cost", value : "Error", description : "Current"},
+                    {title : "Produk", value : "Error", icon : <CircleStackIcon className='w-8 h-8'/>, description : "Current"},
+                    {title : "Kategori", value : "Error", icon : <SwatchIcon className='w-8 h-8'/>, description : "Current"},
+                    {title : "Supplier", value : "Error", icon : <UserGroupIcon className='w-8 h-8'/>, description : "Current period"},
+                ])
+            }
+        }
+        fetchStats()
+    }, [dispatch])
 
     const updateDashboardPeriod = (newRange) => {
         // Dashboard range changed, write code to refresh your values
@@ -51,8 +81,6 @@ function Dashboard(){
                     })
                 }
             </div>
-
-
 
         {/** ---------------------- Different charts ------------------------- */}
             <div className="grid lg:grid-cols-2 mt-4 grid-cols-1 gap-6">
