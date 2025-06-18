@@ -46,10 +46,10 @@ function DashboardSupplier(){
                 const invoiceData = await invoiceRes.json()
 
                 setStatsData([
-                    {title : "Total Revenue", value : `Rp.${revenueData.totalRevenue?.toLocaleString() || 0}`, description : "Current month"},
-                    {title : "Total Seluruh Permintaan", value : `${pesananData.count || 0} Pesanan`, icon : <CreditCardIcon className='w-8 h-8'/>, description : "Current month"},
-                    {title : "Supply Selesai", value : `${acceptedPesananData.count || 0} Terkirim`, icon : <CircleStackIcon className='w-8 h-8'/>, description : "Current month"},
-                    {title : "Invoice Pesanan", value : `${invoiceData.count || 0} Invoice`, icon : <UsersIcon className='w-8 h-8'/>, description : "Current month"},
+                    {title : "Total Revenue", value : `Rp${revenueData.totalRevenue?.toLocaleString() || 0}`, description : "Current"},
+                    {title : "Total Seluruh Permintaan", value : `${pesananData.count || 0} Pesanan`, icon : <CreditCardIcon className='w-8 h-8'/>, description : "Current"},
+                    {title : "Supply Selesai", value : `${acceptedPesananData.count || 0} Terkirim`, icon : <CircleStackIcon className='w-8 h-8'/>, description : "Current"},
+                    {title : "Invoice Pesanan", value : `${invoiceData.count || 0} Invoice`, icon : <UsersIcon className='w-8 h-8'/>, description : "Current"},
                 ])
             } catch (error) {
                 dispatch(showNotification({message : `Failed to load dashboard stats: ${error.message}`, status : 0}))

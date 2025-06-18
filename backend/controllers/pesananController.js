@@ -259,7 +259,7 @@ const countPesananBySupplierIdAccepted = async (req, res) => {
 const countTotalRevenueBySupplierId = async (req, res) => {
   try {
     const { id_supplier } = req.params;
-    const totalRevenue = await Pesanan.sum('total', { where: { id_supplier } });
+    const totalRevenue = await Pesanan.sum('total', { where: { id_supplier, status: 'accepted' } });
     res.status(200).json({ totalRevenue });
   } catch (error) {
     console.error('Error calculating total revenue by supplier id:', error);

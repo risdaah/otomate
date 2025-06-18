@@ -226,8 +226,9 @@ const rejectPesanan = async (req, res) => {
 const countInvoiceBySupplierId = async (req, res) => {
   try {
     const { id_supplier } = req.params;
-    // Count invoices where the related Pesanan has the given id_supplier
+    // Count invoices where the related Pesanan has the given id_supplier and invoice status is 'paid'
     const count = await Invoice.count({
+      where: { status: 'paid' },
       include: [{
         model: require('../models').Pesanan,
         where: { id_supplier }

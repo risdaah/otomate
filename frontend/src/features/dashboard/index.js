@@ -43,7 +43,7 @@ function Dashboard(){
                 const costData = await costRes.json()
 
                 setStatsData([
-                    {title : "Total Cost", value : `Rp.${costData.totalCost.toLocaleString()}`, description : "Current"},
+                    {title : "Total Cost", value : `Rp${costData.totalCost.toLocaleString()}`, description : "Current"},
                     {title : "Produk", value : `${produkData.totalProduk} Item`, icon : <CircleStackIcon className='w-8 h-8'/>, description : "Current"},
                     {title : "Kategori", value : `${kategoriData.totalKategori} Jenis`, icon : <SwatchIcon className='w-8 h-8'/>, description : "Current"},
                     {title : "Supplier", value : `${supplierData.totalSuppliers} Supplier`, icon : <UserGroupIcon className='w-8 h-8'/>, description : "Current period"},
