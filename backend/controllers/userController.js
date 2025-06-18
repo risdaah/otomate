@@ -300,5 +300,20 @@ exports.forgotPassword = async (req, res) => {
   }
 };
 
+// get jumlah supplier
+exports.getSupplierCount = async (req, res) => {
+  try {
+    const count = await User.count({ where: { role: 'supplier' } });
+    res.status(200).json({ totalSuppliers: count });
+  } catch (error) {
+    console.error('Error counting suppliers:', error);
+    res.status(500).json({ message: 'Failed to count suppliers' });
+  }
+};
+
+
+
+
+
 
 

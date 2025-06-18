@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
+
 const kategoriController = require('../controllers/kategoriController');
 const userController = require('../controllers/userController');
 const supplierController = require('../controllers/supplierController');
@@ -25,6 +26,7 @@ router.get('/supplier', supplierController.getAllSuppliers);
 router.get('/supplier-user', supplierController.getAllSupplierUsers);
 router.delete('/supplier/:id', userController.deleteUser);
 router.put('/supplier/:id', userController.updateUser);
+router.get('/supplier-count', userController.getSupplierCount);
 
 // kategori
 router.get('/kategori', kategoriController.getAllKategori);
@@ -32,9 +34,11 @@ router.get('/kategori/:id', kategoriController.getKategoriById);
 router.post('/kategori', kategoriController.createKategori);
 router.put('/kategori/:id', kategoriController.updateKategori);
 router.delete('/kategori/:id', kategoriController.deleteKategori);
+router.get('/kategori-count', kategoriController.getKategoriCount);
 
 // produk
 router.get('/produk', produkController.getAllProduk);
+router.get('/produk-count', produkController.getProdukCount);
 router.get('/produk/:id', produkController.getProdukById);
 router.post('/produk', produkController.createProduk);
 router.put('/produk/:id', produkController.updateProduk);
@@ -47,6 +51,13 @@ router.post('/pesanan', pesananController.createPesanan);
 router.delete('/pesanan/:id', pesananController.deletePesanan);
 router.get('/pesanan-detail', pesananController.getAllPesananWithDetails);
 router.get('/pesanan-detail/:id_supplier', pesananController.getPesananWithDetailsBySupplierId);
+router.get('/total-count', pesananController.getCostPesanan);
+
+// dashboard supplier
+router.get('/pesanan-count/:id_supplier', pesananController.countPesananBySupplierId);
+router.get('/pesanan-count-accepted/:id_supplier', pesananController.countPesananBySupplierIdAccepted);
+router.get('/pesanan-total-revenue/:id_supplier', pesananController.countTotalRevenueBySupplierId);
+router.get('/invoice-count/:id_supplier', invoiceController.countInvoiceBySupplierId);
 
 // invoice
 router.get('/invoice', invoiceController.getAllInvoice);

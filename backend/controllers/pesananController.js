@@ -221,6 +221,51 @@ const getPesananWithDetailsBySupplierId = async (req, res) => {
   }
 };
 
+const getCostPesanan  = async (req, res) => {
+  try {
+    // Sum the total field of Pesanan where status is 'accepted'
+    const totalCost = await Pesanan.sum('total', { where: { status: 'accepted' } });
+    res.status(200).json({ totalCost });
+  } catch (error) {
+    console.error('Error calculating total cost of accepted pesanan:', error);
+    res.status(500).json({ message: 'Failed to calculate total cost' });
+  }
+};
+
+
+const countPesananBySupplierId = async (req, res) => {
+  try {
+    const { id_supplier } = req.params;
+    const count = await Pesanan.count({ where: { id_supplier } });
+    res.status(200).json({ count });
+  } catch (error) {
+    console.error('Error counting pesanan by supplier id:', error);
+    res.status(500).json({ message: 'Failed to count pesanan' });
+  }
+};
+
+
+const countPesananBySupplierIdAccepted = async (req, res) => {
+  try {
+    const { id_supplier } = req.params;
+    const count = await Pesanan.count({ where: { id_supplier, status: 'accepted' } });
+    res.status(200).json({ count });
+  } catch (error) {
+    console.error('Error counting accepted pesanan by supplier id:', error);
+    res.status(500).json({ message: 'Failed to count accepted pesanan' });
+  }
+};
+
+const countTotalRevenueBySupplierId = async (req, res) => {
+  try {
+    const { id_supplier } = req.params;
+    const totalRevenue = await Pesanan.sum('total', { where: { id_supplier } });
+    res.status(200).json({ totalRevenue });
+  } catch (error) {
+    console.error('Error calculating total revenue by supplier id:', error);
+    res.status(500).json({ message: 'Failed to calculate total revenue' });
+  }
+};
 
 module.exports = {
   getAllPesanan,
@@ -228,7 +273,11 @@ module.exports = {
   createPesanan,
   deletePesanan,
   getAllPesananWithDetails,
-  getPesananWithDetailsBySupplierId
+  getPesananWithDetailsBySupplierId,
+  getCostPesanan,
+  countPesananBySupplierId,
+  countPesananBySupplierIdAccepted,
+  countTotalRevenueBySupplierId
 }
   
 

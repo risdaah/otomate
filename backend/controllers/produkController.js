@@ -158,10 +158,21 @@ module.exports = (sequelize) => {
 };
 
 
+const getProdukCount = async (req, res) => {
+  try {
+    const count = await Produk.count();
+    res.status(200).json({ totalProduk: count });
+  } catch (error) {
+    console.error('Error counting produk:', error);
+    res.status(500).json({ message: 'Failed to count produk' });
+  }
+};
+
 module.exports = {
   getAllProduk,
   getProdukById,
   createProduk,
   updateProduk,
   deleteProduk,
+  getProdukCount,
 };
