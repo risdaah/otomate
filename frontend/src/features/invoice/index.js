@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useDispatch, useSelector } from "react-redux";
 import TitleCard from "../../components/Cards/TitleCard";
 import SearchBar from "../../components/Input/SearchBar";
-import { fetchInvoiceBySupplier, downloadInvoicePDF, acceptPesanan } from "./invoiceSlice";
+import { fetchInvoiceBySupplier, downloadInvoicePDF } from "./invoiceSlice";
 
 const Invoice = () => {
   const dispatch = useDispatch();
@@ -72,16 +72,6 @@ const Invoice = () => {
     }
   };
 
-  const handleAcceptPesanan = (id_pesanan) => {
-    dispatch(acceptPesanan(id_pesanan))
-      .unwrap()
-      .then(() => {
-        alert('Pesanan accepted successfully');
-      })
-      .catch((error) => {
-        alert('Failed to accept pesanan: ' + error);
-      });
-  };
 
   return (
     <TitleCard title="Invoice Management">
@@ -134,14 +124,6 @@ const Invoice = () => {
                     >
                       View
                     </button>
-                    {invoice.status === 'unpaid' && (
-                      <button
-                        onClick={() => handleAcceptPesanan(invoice.Pesanan.id_pesanan)}
-                        className="border btn-sm border-green-600 text-green-600 rounded-md px-3 py-1 hover:bg-green-600 hover:text-white"
-                      >
-                        Accept
-                      </button>
-                    )}
                     <button
                       onClick={() => handleDownloadPDF(invoice.id_invoice)}
                       className="border btn-sm border-green-500 text-green-500 rounded-md px-3 py-1 hover:bg-green-500 hover:text-white"
