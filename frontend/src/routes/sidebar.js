@@ -80,7 +80,7 @@ const routes = [
   // supplier menu routes
   {
   path: "/app/dashboard-supplier",
-  icon: <TruckIcon className={iconClasses} />,
+  icon: <Squares2X2Icon className={iconClasses} />,
   name: "Dashboard Supplier",
   roles: ['supplier'],
   },

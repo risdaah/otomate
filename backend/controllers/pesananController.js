@@ -1,5 +1,5 @@
 const { Pesanan, DetailPesanan, Produk, Supplier, Invoice } = require('../models');
-
+const { Sequelize } = require('sequelize');
 
 const getAllPesanan = async (req, res) => {
   try {
@@ -233,6 +233,56 @@ const getCostPesanan  = async (req, res) => {
 };
 
 
+// data untuk grafik line chart
+const getDailyCostData = async (req, res) => {
+  try {
+    // Get date 7 days ago
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6); // last 7 days including today
+
+    // Query total cost grouped by date for last 7 days where status is 'accepted'
+    const dailyCosts = await Pesanan.findAll({
+      attributes: [
+        [Sequelize.fn('DATE', Sequelize.col('created_at')), 'date'],
+        [Sequelize.fn('SUM', Sequelize.col('total')), 'totalCost']
+      ],
+      where: {
+        status: 'accepted',
+        created_at: {
+          [Sequelize.Op.gte]: sevenDaysAgo
+        }
+      },
+      group: [Sequelize.fn('DATE', Sequelize.col('created_at'))],
+      order: [[Sequelize.fn('DATE', Sequelize.col('created_at')), 'ASC']]
+    });
+
+    // Format response as array of { date: 'YYYY-MM-DD', totalCost: number }
+    const formatted = dailyCosts.map(item => ({
+      date: item.getDataValue('date'),
+      totalCost: parseFloat(item.getDataValue('totalCost'))
+    }));
+
+    // Fill missing dates with 0 totalCost
+    const result = [];
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(sevenDaysAgo);
+      date.setDate(sevenDaysAgo.getDate() + i);
+      const dateString = date.toISOString().slice(0, 10);
+      const found = formatted.find(f => f.date === dateString);
+      result.push({
+        date: dateString,
+        totalCost: found ? found.totalCost : 0
+      });
+    }
+
+    res.status(200).json(result);
+  } catch (error) {
+    console.error('Error fetching daily cost data:', error);
+    res.status(500).json({ message: 'Failed to fetch daily cost data' });
+  }
+};
+
+
 const countPesananBySupplierId = async (req, res) => {
   try {
     const { id_supplier } = req.params;
@@ -267,6 +317,70 @@ const countTotalRevenueBySupplierId = async (req, res) => {
   }
 };
 
+const getDataRevenue = async (req, res) => {
+  try {
+    
+  } catch (error) {
+    
+  }
+}
+
+const getDailyRevenueBySupplierId = async (req, res) => {
+  try {
+    const { id_supplier } = req.params;
+
+    if (!id_supplier) {
+      return res.status(400).json({ message: 'Supplier ID is required' });
+    }
+
+    // Calculate date 6 days ago to cover last 7 days including today
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setHours(0, 0, 0, 0);
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
+
+    // Query Pesanan grouped by date with sum of total for accepted status and given supplier
+    const dailyRevenue = await Pesanan.findAll({
+      attributes: [
+        [Sequelize.fn('DATE', Sequelize.col('created_at')), 'date'],
+        [Sequelize.fn('SUM', Sequelize.col('total')), 'totalRevenue']
+      ],
+      where: {
+        id_supplier,
+        status: 'accepted',
+        created_at: {
+          [Sequelize.Op.gte]: sevenDaysAgo
+        }
+      },
+      group: [Sequelize.fn('DATE', Sequelize.col('created_at'))],
+      order: [[Sequelize.fn('DATE', Sequelize.col('created_at')), 'ASC']]
+    });
+
+    // Format the result to map dates and totalRevenue
+    const formatted = dailyRevenue.map(item => ({
+      date: item.getDataValue('date'),
+      totalRevenue: parseFloat(item.getDataValue('totalRevenue'))
+    }));
+
+    // Fill missing dates with 0 totalRevenue
+    const result = [];
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(sevenDaysAgo);
+      date.setDate(sevenDaysAgo.getDate() + i);
+      const dateString = date.toISOString().slice(0, 10);
+      const found = formatted.find(f => f.date === dateString);
+      result.push({
+        date: dateString,
+        totalRevenue: found ? found.totalRevenue : 0
+      });
+    }
+
+    res.status(200).json(result);
+  } catch (error) {
+    console.error('Error fetching daily revenue by supplier id:', error);
+    res.status(500).json({ message: 'Failed to fetch daily revenue data', error: error.message });
+  }
+};
+
 module.exports = {
   getAllPesanan,
   getPesananById,
@@ -277,7 +391,9 @@ module.exports = {
   getCostPesanan,
   countPesananBySupplierId,
   countPesananBySupplierIdAccepted,
-  countTotalRevenueBySupplierId
+  countTotalRevenueBySupplierId,
+  getDailyCostData,
+  getDailyRevenueBySupplierId
 }
   
 

@@ -72,6 +72,24 @@ const Invoice = () => {
     }
   };
 
+  const getInvoiceStatus = (status) => {
+        if (status == 'paid') {
+            return (
+                <div className="badge badge-success">
+                    <span className="text-white font-semibold px-7">Paid</span>
+                </div>
+            );
+        } else if (status == 'unpaid') {
+            return (
+                <div className="badge bg-gray-500">
+                    <span className="text-white font-semibold px-5">Unpaid</span>
+                </div>
+            );
+        } else {
+            return null; // Atau ganti dengan badge lainnya jika dibutuhkan
+        }
+    };
+
 
   return (
     <TitleCard title="Invoice Management">
@@ -92,12 +110,12 @@ const Invoice = () => {
         <table className="table w-full table-auto">
           <thead>
             <tr>
-              <th className="text-center">Invoice ID</th>
-              <th className="text-center">Customer Name</th>
-              <th className="text-center">Date</th>
-              <th className="text-center">Total</th>
-              <th className="text-center">Status</th>
-              <th className="text-center">Action</th>
+              <th className="text-center text-primary text-base">Invoice ID</th>
+              <th className="text-center text-primary text-base">Customer Name</th>
+              <th className="text-center text-primary text-base">Date</th>
+              <th className="text-center text-primary text-base">Total</th>
+              <th className="text-center text-primary text-base">Status</th>
+              <th className="text-center text-primary text-base">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -116,7 +134,7 @@ const Invoice = () => {
                   <td className="text-center">
                     Rp {Number(invoice.Pesanan?.total).toLocaleString("id-ID")}
                   </td>
-                  <td className="text-center">{invoice.status}</td>
+                  <td className="text-center">{getInvoiceStatus(invoice.status)}</td>
                   <td className="text-center space-x-2">
                     <button
                       onClick={() => handleViewDetail(invoice)}

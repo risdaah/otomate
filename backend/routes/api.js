@@ -39,6 +39,7 @@ router.get('/kategori-count', kategoriController.getKategoriCount);
 // produk
 router.get('/produk', produkController.getAllProduk);
 router.get('/produk-count', produkController.getProdukCount);
+router.get('/produk-stock-per-kategori', produkController.getStockPerCategory);
 router.get('/produk/:id', produkController.getProdukById);
 router.post('/produk', produkController.createProduk);
 router.put('/produk/:id', produkController.updateProduk);
@@ -58,6 +59,8 @@ router.get('/pesanan-count/:id_supplier', pesananController.countPesananBySuppli
 router.get('/pesanan-count-accepted/:id_supplier', pesananController.countPesananBySupplierIdAccepted);
 router.get('/pesanan-total-revenue/:id_supplier', pesananController.countTotalRevenueBySupplierId);
 router.get('/invoice-count/:id_supplier', invoiceController.countInvoiceBySupplierId);
+router.get('/daily-cost-data', pesananController.getDailyCostData);
+router.get('/pesanan/daily-revenue/:id_supplier', pesananController.getDailyRevenueBySupplierId);
 
 // invoice
 router.get('/invoice', invoiceController.getAllInvoice);

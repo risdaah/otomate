@@ -134,7 +134,7 @@ function Login() {
 
               <button
                 type="submit"
-                className={`btn mt-2 w-full btn-primary ${loading ? "loading" : ""}`}
+                className={`btn mt-2 w-full text-white btn-primary ${loading ? "loading" : ""}`}
               >
                 Login
               </button>

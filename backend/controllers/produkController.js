@@ -1,5 +1,6 @@
 const db = require('../models');
 const Produk = db.Produk;
+const Sequelize = require('sequelize');
 const path = require('path');
 const fs = require('fs');
 const Kategori = db.Kategori; // untuk relasi get nama_kategori
@@ -168,6 +169,39 @@ const getProdukCount = async (req, res) => {
   }
 };
 
+const getStockPerCategory = async (req, res) => {
+  try {
+    const stockData = await Produk.findAll({
+      attributes: [
+        'id_kategori',
+        [Sequelize.fn('SUM', Sequelize.col('stok')), 'total_stok']
+      ],
+      include: [
+        {
+          model: Kategori,
+          attributes: ['nama_kategori']
+        }
+      ],
+      group: ['id_kategori', 'Kategori.id_kategori', 'Kategori.nama_kategori']
+    });
+
+    console.log('Stock data raw:', stockData);
+
+    const response = stockData.map(item => ({
+      id_kategori: item.id_kategori,
+      nama_kategori: item.Kategori?.nama_kategori || 'Unknown',
+      total_stok: parseInt(item.dataValues.total_stok, 10)
+    }));
+
+    console.log('Stock data response:', response);
+
+    res.status(200).json(response);
+  } catch (error) {
+    console.error('Error fetching stock per category:', error.stack || error);
+    res.status(500).json({ message: 'Failed to retrieve stock per category' });
+  }
+};
+
 module.exports = {
   getAllProduk,
   getProdukById,
@@ -175,4 +209,5 @@ module.exports = {
   updateProduk,
   deleteProduk,
   getProdukCount,
+  getStockPerCategory
 };

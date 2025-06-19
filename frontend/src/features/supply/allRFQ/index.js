@@ -73,13 +73,37 @@ function Supply() {
   const currentItems = filteredSupplys.slice(indexOfFirstItem, indexOfLastItem);
 
   // Status
-  const getPaymentStatus = (status) => {
-    if(status  === "rejected") return <div className="py-1 text-l font-semibold rounded-md text-red-500 border border-red-500">{status}</div>
-    if(status  === "pending")return <div className="py-1 text-l font-semibold rounded-md text-gray-500 border border-gray-500">{status}</div>
-    if(status  === "accepted")return <div className="py-1 text-l font-semibold rounded-md text-green-500 border border-green-500">{status}</div>
-    else return <div className="badge badge-ghost">{status}</div>
-  }
+  // const getPaymentStatus = (status) => {
+  //   if(status  === "rejected") return <div className="py-1 text-l font-semibold rounded-md text-red-500 border border-red-500">{status}</div>
+  //   if(status  === "pending")return <div className="py-1 text-l font-semibold rounded-md text-gray-500 border border-gray-500">{status}</div>
+  //   if(status  === "accepted")return <div className="py-1 text-l font-semibold rounded-md text-green-500 border border-green-500">{status}</div>
+  //   else return <div className="badge badge-ghost">{status}</div>
+  // }
 
+  const getPaymentStatus = (status) => {
+        if (status == 'accepted') {
+            return (
+                <div className="badge badge-success">
+                    <span className="text-white  font-semibold px-5">Accepted</span>
+                </div>
+            );
+        } else if (status == 'pending') {
+            return (
+                <div className="badge bg-gray-500">
+                    <span className="text-white font-semibold px-5">Pending</span>
+                </div>
+            );
+        } else if (status == 'rejected') {
+            return (
+                <div className="badge bg-red-500">
+                    <span className="text-white font-semibold px-5">Rejected</span>
+                </div>
+            );
+        } else {
+            return null; // Atau ganti dengan badge lainnya jika dibutuhkan
+        }
+    };
+    
 
   // DROPDOWN
   const [openDropdown, setOpenDropdown] = useState(null);
@@ -263,10 +287,12 @@ function Supply() {
                         alert('Failed to download invoice PDF');
                       }
                     }}>
-                      <DocumentText className="h-5 w-5 inline-block mr-1" />
-                      <li>
-                        <span>Download Invoice</span>
-                      </li>
+                        <div className="flex items-center mr-2">
+                              <DocumentText className="h-5 w-5 inline-block mr-1" />
+                              <li>  
+                                  <span>Download</span>
+                              </li>
+                          </div>
                     </div>
                   )}
                                             
