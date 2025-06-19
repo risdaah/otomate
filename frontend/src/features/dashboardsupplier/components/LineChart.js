@@ -1,3 +1,7 @@
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useSelector } from 'react-redux';
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -23,7 +27,23 @@ ChartJS.register(
   Legend
 );
 
-function LineChart(){
+function LineChart() {
+  // Get id_supplier from Redux store user state
+  const user = useSelector(state => state.auth.user);
+  const id_supplier = user?.detail?.id_supplier;
+
+  const [chartData, setChartData] = useState({
+    labels: [],
+    datasets: [
+      {
+        fill: true,
+        label: 'REVENUE',
+        data: [],
+        borderColor: 'rgb(127, 0, 0)',
+        backgroundColor: 'rgba(53, 162, 235, 0.4)',
+      },
+    ],
+  });
 
   const options = {
     responsive: true,
@@ -32,42 +52,56 @@ function LineChart(){
         position: 'top',
       },
     },
-  };
-
-    const labels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  // const labels = ['Sunday', 'Monaday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-
-  const data = {
-  labels,
-  datasets: [
-    {
-      fill: true,
-      label: 'COST',
-      data: labels.map(() => { return Math.random() * 5000 + 500 }),
-      borderColor: 'rgb(127, 0, 0)',
-      backgroundColor: 'rgba(53, 162, 235, 0.4)',
-    },
-  ],
-   options: {
     scales: {
       y: {
         ticks: {
-          callback: function(value) {
-            return value.toFixed(0) + ' Jt';
-          }
-        }
+          callback: function (value) {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(value * 1000);
+          },
+        },
+      },
+    },
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (!id_supplier) return;
+        const response = await axios.get(`http://localhost:5000/api/pesanan/daily-revenue/${id_supplier}`);
+        const data = response.data;
+
+        const labels = data.map(item => {
+          const date = new Date(item.date);
+          return date.toLocaleDateString('id-ID', { weekday: 'short' });
+        });
+
+        const revenueData = data.map(item => item.totalRevenue / 1000); // convert to thousands
+
+        setChartData({
+          labels,
+          datasets: [
+            {
+              fill: true,
+              label: 'REVENUE',
+              data: revenueData,
+              borderColor: 'rgb(127, 0, 0)',
+              backgroundColor: 'rgba(53, 162, 235, 0.4)',
+            },
+          ],
+        });
+      } catch (error) {
+        console.error('Error fetching daily revenue data:', error);
       }
-    }
-  }
-};
-  
+    };
 
-    return(
-      <TitleCard title={"total Revenue"}>
-          <Line data={data} options={options}/>
-      </TitleCard>
-    )
+    fetchData();
+  }, [id_supplier]);
+
+  return (
+    <TitleCard title={'Total Revenue'}>
+      <Line data={chartData} options={options} />
+    </TitleCard>
+  );
 }
-
 
 export default LineChart

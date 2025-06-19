@@ -64,6 +64,31 @@ function Pesanan() {
     setSelectedPesanan(null);
   };
 
+  const getPesananStatus = (status) => {
+        if (status == 'accepted') {
+            return (
+                <div className="badge badge-success">
+                    <span className="text-white font-semibold px-5">Accepted</span>
+                </div>
+            );
+        } else if (status == 'pending') {
+            return (
+                <div className="badge bg-gray-500">
+                    <span className="text-white font-semibold px-5">Pending</span>
+                </div>
+            );
+        } else if (status == 'rejected') {
+            return (
+                <div className="badge bg-red-500">
+                    <span className="text-white font-semibold px-5">Rejected</span>
+                </div>
+            );
+        } else {
+            return null; // Atau ganti dengan badge lainnya jika dibutuhkan
+        }
+    };
+
+
   return (
     <TitleCard title="Pesanan Management">
       <div className="flex justify-between items-center mb-4">
@@ -80,11 +105,11 @@ function Pesanan() {
         <table className="table w-full table-auto">
           <thead>
             <tr>
-              <th className="text-center">ID</th>
-              <th className="text-center">Tanggal</th>
-              <th className="text-center">Total</th>
-              <th className="text-center">Status</th>
-              <th className="text-center">Action</th>
+              <th className="text-center text-primary text-base">ID</th>
+              <th className="text-center text-primary text-base">Tanggal</th>
+              <th className="text-center text-primary text-base">Total</th>
+              <th className="text-center text-primary text-base">Status</th>
+              <th className="text-center text-primary text-base">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -97,7 +122,7 @@ function Pesanan() {
                 <td className="text-center">
                   Rp {Number(pesanan.total).toLocaleString("id-ID")}
                 </td>
-                <td className="text-center">{pesanan.status}</td>
+                <td className="text-center">{getPesananStatus(pesanan.status)}</td>
                 <td className="flex justify-center space-x-2">
                   <button
                     onClick={() => handleViewDetail(pesanan)}

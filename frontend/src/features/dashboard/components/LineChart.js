@@ -12,6 +12,8 @@ import {
 import { Line } from 'react-chartjs-2';
 import TitleCard from '../../../components/Cards/TitleCard';
 
+import { useState, useEffect } from 'react';
+
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -25,6 +27,19 @@ ChartJS.register(
 
 function LineChart(){
 
+  const [chartData, setChartData] = useState({
+    labels: [],
+    datasets: [
+      {
+        fill: true,
+        label: 'COST',
+        data: [],
+        borderColor: 'rgb(127, 0, 0)',
+        backgroundColor: 'rgba(53, 162, 235, 0.4)',
+      },
+    ],
+  });
+
   const options = {
     responsive: true,
     plugins: {
@@ -32,42 +47,51 @@ function LineChart(){
         position: 'top',
       },
     },
-  };
-
-  
-  const labels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  // const labels = ['Sunday', 'Monaday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-
-  const data = {
-  labels,
-  datasets: [
-    {
-      fill: true,
-      label: 'COST',
-      data: labels.map(() => { return Math.random() * 5000 + 500 }),
-      borderColor: 'rgb(127, 0, 0)',
-      backgroundColor: 'rgba(53, 162, 235, 0.4)',
-    },
-  ],
-   options: {
     scales: {
       y: {
         ticks: {
           callback: function(value) {
-            return value.toFixed(0) + ' Jt';
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(value * 1000000);
           }
         }
       }
     }
-  }
-};
-  
+  };
 
-    return(
-      <TitleCard title={"Revenue Cost"}>
-          <Line data={data} options={options}/>
-      </TitleCard>
-    )
+  useEffect(() => {
+    async function fetchDailyCostData() {
+      try {
+        const response = await fetch('http://localhost:5000/api/daily-cost-data');
+        const data = await response.json();
+        const labels = data.map(item => {
+          const date = new Date(item.date);
+          return date.toLocaleDateString('en-US', { weekday: 'short' });
+        });
+        const costs = data.map(item => item.totalCost / 1000000); // convert to millions (Jt)
+        setChartData({
+          labels,
+          datasets: [
+            {
+              fill: true,
+              label: 'COST',
+              data: costs,
+              borderColor: 'rgb(127, 0, 0)',
+              backgroundColor: 'rgba(53, 162, 235, 0.4)',
+            },
+          ],
+        });
+      } catch (error) {
+        console.error('Failed to fetch daily cost data:', error);
+      }
+    }
+    fetchDailyCostData();
+  }, []);
+
+  return(
+    <TitleCard title={"Supply Cost"}>
+        <Line data={chartData} options={options}/>
+    </TitleCard>
+  )
 }
 
 
